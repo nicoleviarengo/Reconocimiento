@@ -1,0 +1,492 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caja - Reconocimiento 2025</title>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="brand">
+                <div class="brand-dot"></div>
+                <span>Reconocimiento 2025</span>
+            </div>
+            
+            <div class="user-info">
+                <div class="user-avatar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" fill="#a363f1"/>
+                        <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="#a363f1"/>
+                    </svg>
+                </div>
+                <span class="user-name">Usuario</span>
+                <button class="logout-btn" onclick="logout()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Back Button -->
+        <button class="back-btn" onclick="goToHome()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Volver al inicio
+        </button>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-title">
+                <div class="title-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                        <rect x="2" y="8" width="20" height="12" rx="2" fill="white"/>
+                        <path d="M7 12h10M7 15h6" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
+                        <rect x="6" y="4" width="12" height="4" rx="1" fill="white" stroke="#10b981" stroke-width="1.5"/>
+                        <circle cx="18" cy="14" r="2" fill="#10b981"/>
+                    </svg>
+                </div>
+                <h1>Caja</h1>
+            </div>
+
+            <div class="photo-section">
+                <div class="photo-container" id="photoContainer">
+                    <div class="photo-placeholder" id="photoPlaceholder">
+                        <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="3" width="18" height="18" rx="2" stroke="#cbd5e1" stroke-width="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5" fill="#cbd5e1"/>
+                            <path d="M3 16L7 12L11 16L15 12L21 18V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V16Z" fill="#cbd5e1"/>
+                        </svg>
+                        <p>No hay imagen seleccionada</p>
+                    </div>
+                    <img id="photoPreview" class="photo-preview" style="display: none;">
+                    <input type="file" id="photoInput" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
+                </div>
+
+                <div class="button-group">
+                    <button class="action-button primary-btn" onclick="document.getElementById('photoInput').click()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 3H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="12" cy="13" r="4" stroke="white" stroke-width="2"/>
+                        </svg>
+                        Tomar Foto
+                    </button>
+
+                    <button class="action-button secondary-btn" onclick="goToResumen()" id="resumenBtn" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M9 5H7C6.46957 5 5.96086 5.21071 5.58579 5.58579C5.21071 5.96086 5 6.46957 5 7V19C5 19.5304 5.21071 20.0391 5.58579 20.4142C5.96086 20.7893 6.46957 21 7 21H17C17.5304 21 18.0391 20.7893 18.4142 20.4142C18.7893 20.0391 19 19.5304 19 19V7C19 6.46957 18.7893 5.96086 18.4142 5.58579C18.0391 5.96086 17.5304 5 17 5H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M9 5C9 4.46957 9.21071 3.96086 9.58579 3.58579C9.96086 3.21071 10.4696 3 11 3H13C13.5304 3 14.0391 3.21071 14.4142 3.58579C14.7893 3.96086 15 4.46957 15 5C15 5.53043 14.7893 6.03914 14.4142 6.41421C14.0391 6.78929 13.5304 7 13 7H11C10.4696 7 9.96086 6.78929 9.58579 6.41421C9.21071 6.03914 9 5.53043 9 5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M9 12H15M9 16H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Resumen
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading Overlay -->
+            <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>Procesando imagen...</p>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© Proyecto Reconocimiento de imágenes 2025</p>
+        </footer>
+    </div>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            min-height: 100vh;
+            color: #111827;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #e5e7eb;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 0 0 16px 16px;
+            margin: 0 -20px 40px -20px;
+            padding: 20px 40px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 18px;
+            color: #1f2937;
+        }
+
+        .brand-dot {
+            width: 12px;
+            height: 12px;
+            background: #a363f1;
+            border-radius: 50%;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(163, 99, 241, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            padding: 10px 20px;
+            border-radius: 12px;
+            color: #6b7280;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 24px;
+        }
+
+        .back-btn:hover {
+            background: #f9fafb;
+            color: #111827;
+            transform: translateX(-4px);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .title-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page-title h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        /* Photo Section */
+        .photo-section {
+            background: white;
+            border-radius: 24px;
+            padding: 48px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .photo-container {
+            width: 100%;
+            aspect-ratio: 4/3;
+            max-width: 600px;
+            margin: 0 auto;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #f9fafb;
+            border: 2px dashed #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .photo-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            color: #94a3b8;
+        }
+
+        .photo-placeholder p {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .photo-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Button Group */
+        .button-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 180px;
+            justify-content: center;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .secondary-btn {
+            background: white;
+            color: #6b7280;
+            border: 2px solid #e5e7eb;
+        }
+
+        .secondary-btn:not(:disabled):hover {
+            background: #f9fafb;
+            border-color: #a363f1;
+            color: #a363f1;
+            transform: translateY(-2px);
+        }
+
+        .secondary-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #10b981;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-overlay p {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #9ca3af;
+            font-size: 14px;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 40px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 16px 20px;
+                margin: 0 -20px 20px -20px;
+            }
+
+            .photo-section {
+                padding: 32px 24px;
+            }
+
+            .page-title h1 {
+                font-size: 28px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .action-button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .user-info .user-name {
+                display: none;
+            }
+
+            .photo-section {
+                padding: 24px 16px;
+            }
+        }
+    </style>
+
+    <script>
+        let uploadedPhoto = null;
+
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedPhoto = e.target.result;
+                    const preview = document.getElementById('photoPreview');
+                    const placeholder = document.getElementById('photoPlaceholder');
+                    
+                    preview.src = uploadedPhoto;
+                    preview.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    
+                    // Habilitar botón de resumen
+                    document.getElementById('resumenBtn').disabled = false;
+                    
+                    // Simular procesamiento
+                    showLoading();
+                    setTimeout(() => {
+                        hideLoading();
+                    }, 2000);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        function goToHome() {
+            window.location.href = '/api/home/';
+        }
+
+        function goToResumen() {
+            if (uploadedPhoto) {
+                console.log('Navegando a resumen...');
+                window.location.href = '/api/caja/resumen/';
+            }
+        }
+
+        function logout() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                window.location.href = '/api/login/';
+            }
+        }
+
+        // Animación de entrada
+        window.addEventListener('DOMContentLoaded', function() {
+            const photoSection = document.querySelector('.photo-section');
+            photoSection.style.opacity = '0';
+            photoSection.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                photoSection.style.transition = 'all 0.6s ease';
+                photoSection.style.opacity = '1';
+                photoSection.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
