@@ -1,0 +1,447 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Cliente - Reconocimiento 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            min-height: 100vh;
+            color: #111827;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #e5e7eb;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 0 0 16px 16px;
+            margin: 0 -20px 40px -20px;
+            padding: 20px 40px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 18px;
+            color: #1f2937;
+        }
+
+        .brand-dot {
+            width: 12px;
+            height: 12px;
+            background: #a363f1;
+            border-radius: 50%;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(163, 99, 241, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            padding: 10px 20px;
+            border-radius: 12px;
+            color: #6b7280;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 24px;
+            width: fit-content;
+        }
+
+        .back-btn:hover {
+            background: #f9fafb;
+            color: #111827;
+            transform: translateX(-4px);
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .registration-card {
+            background: linear-gradient(135deg, #e9d5ff 0%, #f3e8ff 100%);
+            border-radius: 24px;
+            padding: 48px 32px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            max-width: 500px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            text-align: center;
+        }
+
+        .title-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .title-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .registration-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: left;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            color: #374151;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #a363f1;
+            box-shadow: 0 0 0 3px rgba(163, 99, 241, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .primary-btn {
+            background: #1f2937;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .primary-btn:hover {
+            background: #111827;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .primary-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .secondary-btn {
+            background: white;
+            color: #111827;
+            border: 2px solid #e5e7eb;
+        }
+
+        .secondary-btn:hover {
+            background: white;
+            border-color: #a363f1;
+            color: #a363f1;
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #9ca3af;
+            font-size: 14px;
+            border-top: 1px solid #e5e7eb;
+            margin-top: auto;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+            border-left: 4px solid #dc2626;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+            border-left: 4px solid #059669;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 16px 20px;
+                margin: 0 -20px 20px -20px;
+            }
+
+            .registration-card {
+                padding: 32px 24px;
+            }
+
+            .registration-title {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .user-info .user-name {
+                display: none;
+            }
+
+            .registration-card {
+                padding: 24px 16px;
+            }
+
+            .title-section {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="brand">
+                <div class="brand-dot"></div>
+                <span>Reconocimiento 2025</span>
+            </div>
+            
+            <div class="user-info">
+                <div class="user-avatar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" fill="#a363f1"/>
+                        <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="#a363f1"/>
+                    </svg>
+                </div>
+                <span class="user-name">Usuario</span>
+            </div>
+        </header>
+
+        <button class="back-btn" onclick="goBack()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+
+        <main class="main-content">
+            <div class="registration-card">
+                <div class="title-section">
+                    <h1 class="registration-title">Compra confirmada</h1>
+                    <div class="title-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M20 6L9 17L4 12" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div id="errorMessage" class="error-message"></div>
+                <div id="successMessage" class="success-message"></div>
+
+                <form id="registrationForm">
+                    <div class="form-group">
+                        <label class="form-label">DNI Cliente</label>
+                        <input type="text" class="form-input" id="dniInput" placeholder="Ingrese DNI" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Teléfono (Whatsapp)</label>
+                        <input type="tel" class="form-input" id="phoneInput" placeholder="Ingrese teléfono" required>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="primary-btn" onclick="registrarCliente()">
+                            Registrar y Enviar Comprobante
+                        </button>
+                        <button type="button" class="secondary-btn" onclick="goBack()">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>© Proyecto Reconocimiento de imágenes 2025</p>
+        </footer>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            const card = document.querySelector('.registration-card');
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'all 0.6s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+        });
+
+        function registrarCliente() {
+            const dni = document.getElementById('dniInput').value.trim();
+            const phone = document.getElementById('phoneInput').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+
+            if (!dni) {
+                mostrarError('Por favor ingrese un DNI');
+                return;
+            }
+
+            if (!phone) {
+                mostrarError('Por favor ingrese un teléfono');
+                return;
+            }
+
+            if (!/^\d+$/.test(dni)) {
+                mostrarError('El DNI debe contener solo números');
+                return;
+            }
+
+            if (!/^\d+$/.test(phone)) {
+                mostrarError('El teléfono debe contener solo números');
+                return;
+            }
+
+            if (phone.length < 7) {
+                mostrarError('El teléfono debe tener al menos 7 dígitos');
+                return;
+            }
+
+            mostrarExito('Cliente registrado exitosamente. Comprobante enviado a WhatsApp');
+            
+            setTimeout(() => {
+                window.location.href = '/api/home/';
+            }, 2000);
+        }
+
+        function mostrarError(mensaje) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = mensaje;
+            errorMessage.style.display = 'block';
+        }
+
+        function mostrarExito(mensaje) {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = mensaje;
+            successMessage.style.display = 'block';
+        }
+
+        function goBack() {
+            window.location.href = '/api/caja/compra-confirmada/';
+        }
+    </script>
+</body>
+</html>
