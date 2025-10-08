@@ -85,6 +85,14 @@ def resumen_caja_page(request):
     return render(request, 'api/resumen_caja.html', context)
 
 
+def compra_confirmada_page(request):
+    """Renderiza la página de compra confirmada"""
+    return render(request, 'api/compra_confirmada.html')
+
+def registro_cliente_page(request):
+    """Renderiza la página de registro de cliente"""
+    return render(request, 'api/registro_cliente.html')
+
 @csrf_exempt
 def procesar_imagen_caja(request):
     """
