@@ -145,6 +145,20 @@ def procesar_imagen_caja(request):
         'error': 'Método no permitido'
     }, status=405)
 
+def historial_deposito_page(request):
+    """Renderiza la página de historial de depósito"""
+    # Obtener el historial de la sesión
+    productos = request.session.get('historial_deposito', [])
+    
+    # Calcular el total de cantidades
+    total_cantidad = sum(p['cantidad'] for p in productos)
+    
+    context = {
+        'productos': productos,
+        'total_cantidad': total_cantidad
+    }
+    
+    return render(request, 'api/historial_deposito.html', context)
 
 @csrf_exempt
 def confirmar_orden_caja(request):
@@ -196,19 +210,29 @@ def confirmar_orden_caja(request):
 # ==================== DEPÓSITO ====================
 
 def deposito_page(request):
-    """Página principal de depósito (placeholder)"""
-    return HttpResponse("Página de Depósito - En desarrollo")
+    return render(request, 'api/deposito.html')
 
 
 def foto_deposito_page(request):
-    """Página para capturar foto en depósito (placeholder)"""
-    return HttpResponse("Página de Foto Depósito - En desarrollo")
+    return render(request, 'api/foto_deposito.html')
 
 
 def resumen_deposito_page(request):
-    """Página de resumen de depósito (placeholder)"""
-    return HttpResponse("Página de Resumen Depósito - En desarrollo")
+    # Obtener productos desde la sesión si existen
+    productos = request.session.get('productos_deposito', [
+        {'id': 1, 'cantidad': 12, 'nombre': 'Item 1'},
+        {'id': 2, 'cantidad': 25, 'nombre': 'Item 2'},
+        {'id': 3, 'cantidad': 33, 'nombre': 'Item 3'},
+        {'id': 4, 'cantidad': 9, 'nombre': 'Item 4'},
+    ])
+    
+    context = {
+        'productos': productos
+    }
+    return render(request, 'api/resumen_deposito.html', context)
 
+def deposito_confirmada_page(request):
+    return render(request, 'api/deposito_confirmada.html')
 
 @csrf_exempt
 def procesar_imagen_deposito(request):
@@ -226,3 +250,4 @@ def confirmar_inventario_deposito(request):
         'success': False,
         'message': 'Funcionalidad en desarrollo'
     })
+
