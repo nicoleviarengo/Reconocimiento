@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transferencia de Stock - Reconocimiento 2025</title>
+    <title>Transferencia Confirmada - Reconocimiento 2025</title>
     <style>
         * {
             margin: 0;
@@ -93,27 +93,6 @@
             color: #ef4444;
         }
 
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: white;
-            border: 1px solid #e5e7eb;
-            padding: 10px 20px;
-            border-radius: 12px;
-            color: #6b7280;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 24px;
-        }
-
-        .back-btn:hover {
-            background: #f9fafb;
-            color: #111827;
-            transform: translateX(-4px);
-        }
-
         .main-content {
             flex: 1;
             display: flex;
@@ -123,73 +102,83 @@
             padding: 40px 0;
         }
 
-        .transfer-card {
+        .success-card {
             background: white;
             border-radius: 24px;
-            padding: 48px;
+            padding: 64px 48px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-            max-width: 500px;
+            max-width: 600px;
             width: 100%;
-        }
-
-        .card-title {
-            font-size: 28px;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 32px;
             text-align: center;
         }
 
-        .form-group {
-            margin-bottom: 32px;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 16px;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 12px;
-        }
-
-        .form-input,
-        .form-select {
-            width: 100%;
-            padding: 16px 20px;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            font-size: 16px;
-            color: #111827;
-            background: #f9fafb;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-
-        .form-input:focus,
-        .form-select:focus {
-            outline: none;
-            border-color: #f59e0b;
-            background: white;
-        }
-
-        .form-select {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
-            padding-right: 48px;
-        }
-
-        .button-group {
+        .success-icon-container {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 50%;
             display: flex;
-            gap: 16px;
-            margin-top: 40px;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 32px;
+            animation: scaleIn 0.5s ease-out;
         }
 
-        .btn {
-            flex: 1;
-            padding: 16px 32px;
+        @keyframes scaleIn {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .checkmark {
+            width: 60px;
+            height: 60px;
+            stroke: white;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+            animation: drawCheck 0.5s ease-out 0.3s forwards;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+        }
+
+        @keyframes drawCheck {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .success-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 16px;
+        }
+
+        .success-message {
+            font-size: 18px;
+            color: #6b7280;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+        }
+
+        .btn-home, .btn-view-deposito {
+            width: 100%;
+            padding: 18px 32px;
             border: none;
             border-radius: 12px;
             font-size: 16px;
@@ -199,27 +188,27 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 12px;
         }
 
-        .btn-cancel {
-            background: white;
-            color: #6b7280;
-            border: 2px solid #e5e7eb;
+        .btn-home {
+            background: linear-gradient(135deg, #a363f1 0%, #7e56eb 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(163, 99, 241, 0.3);
         }
 
-        .btn-cancel:hover {
-            background: #f9fafb;
-            color: #111827;
+        .btn-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(163, 99, 241, 0.4);
         }
 
-        .btn-primary {
+        .btn-view-deposito {
             background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             color: white;
             box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
         }
 
-        .btn-primary:hover {
+        .btn-view-deposito:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
         }
@@ -239,16 +228,26 @@
                 margin: 0 -20px 20px -20px;
             }
 
-            .transfer-card {
-                padding: 32px 24px;
+            .success-card {
+                padding: 48px 32px;
             }
 
-            .card-title {
-                font-size: 24px;
+            .success-title {
+                font-size: 26px;
             }
 
-            .button-group {
-                flex-direction: column;
+            .success-message {
+                font-size: 16px;
+            }
+
+            .success-icon-container {
+                width: 100px;
+                height: 100px;
+            }
+
+            .checkmark {
+                width: 50px;
+                height: 50px;
             }
         }
 
@@ -285,52 +284,37 @@
             </div>
         </header>
 
-        <button class="back-btn" onclick="goBack()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Volver
-        </button>
-
         <main class="main-content">
-            <div class="transfer-card">
-                <h1 class="card-title">Transferencia de Stock</h1>
-                
-                <form id="transferForm">
-                    <div class="form-group">
-                        <label class="form-label">Almacén Origen:</label>
-                        <select class="form-select" id="almacenDestino">
-                            <option value="">Seleccionar depósito</option>
-                            <option value="deposito2">Depósito 1</option>
-                            <option value="deposito2">Depósito 2</option>
-                            <option value="deposito3">Depósito 3</option>
-                            <option value="deposito4">Depósito 4</option>
-                        </select>
-                    </div>
+            <div class="success-card">
+                <div class="success-icon-container">
+                    <svg class="checkmark" viewBox="0 0 52 52">
+                        <path d="M14 27l7.5 7.5L38 18"/>
+                    </svg>
+                </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Almacén Destino:</label>
-                        <select class="form-select" id="almacenDestino">
-                            <option value="">Seleccionar depósito</option>
-                            <option value="deposito2">Depósito 1</option>
-                            <option value="deposito2">Depósito 2</option>
-                            <option value="deposito3">Depósito 3</option>
-                            <option value="deposito4">Depósito 4</option>
-                        </select>
-                    </div>
+                <h1 class="success-title">Transferencia Confirmada</h1>
+                <p class="success-message">
+                    La transferencia de productos se ha realizado exitosamente.<br>
+                    El inventario ha sido actualizado correctamente.
+                </p>
 
-                    <div class="button-group">
-                        <button type="button" class="btn btn-cancel" onclick="cancel()">
-                            Cancelar
-                        </button>
-                        <button type="button" class="btn btn-primary" onclick="continuar()">
-                            Continuar
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
-                    </div>
-                </form>
+                <div class="buttons-container">
+                    <button class="btn-home" onclick="goToHome()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M9 22V12H15V22" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Volver
+                    </button>
+
+                    <button class="btn-view-deposito" onclick="goToVerDeposito()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M3 8L12 3L21 8V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V8Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M9 21V12H15V21" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Ver Depósito
+                    </button>
+                </div>
             </div>
         </main>
 
@@ -341,7 +325,7 @@
 
     <script>
         window.addEventListener('DOMContentLoaded', function() {
-            const card = document.querySelector('.transfer-card');
+            const card = document.querySelector('.success-card');
             card.style.opacity = '0';
             card.style.transform = 'translateY(20px)';
             
@@ -352,25 +336,12 @@
             }, 100);
         });
 
-        function continuar() {
-            const destino = document.getElementById('almacenDestino').value;
-            
-            if (!destino) {
-                alert('Por favor selecciona un almacén destino');
-                return;
-            }
-            
-            window.location.href = '/api/deposito/foto/';
-        }
-
-        function cancel() {
-            if (confirm('¿Estás seguro de que quieres cancelar?')) {
-                window.location.href = '/api/home/';
-            }
-        }
-
-        function goBack() {
+        function goToHome() {
             window.location.href = '/api/home/';
+        }
+
+        function goToVerDeposito() {
+            window.location.href = '/api/deposito/historial/';
         }
 
         function logout() {
