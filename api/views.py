@@ -5,6 +5,10 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.conf import settings 
 import json
+import requests
+
+# ==================== URL Backend ====================
+BACKEND_URL = getattr(settings, 'BACKEND_API_URL', 'http://localhost:8000')
 
 # ==================== AUTENTICACIÓN ====================
 
@@ -27,24 +31,42 @@ def login_process(request):
             dni = data.get('dni')
             password = data.get('password')
             
-            if dni and password:
-                # Simulación de autenticación exitosa
-                if dni == "555555" and password == "password":
-                    return JsonResponse({
-                        'success': True,
-                        'message': '¡Login exitoso! Redirigiendo...',
-                        'redirect_url': '/api/home/'
-                    })
-                else:
-                    return JsonResponse({
-                        'success': False,
-                        'message': 'DNI o contraseña incorrectos'
-                    })
-            else:
+            if not dni or not password:
                 return JsonResponse({
                     'success': False,
                     'message': 'Por favor complete todos los campos'
                 })
+            
+            # ✅ LLAMAR AL BACKEND para autenticación
+            response = requests.post(
+                f'{BACKEND_URL}/api/home/login/',
+                json={'username': dni, 'password': password},
+                timeout=10
+            )
+
+            if response.status_code == 200:
+                backend_data = response.json()
+                
+                # ✅ Guardar DNI y nombre en sesión
+                request.session['user_dni'] = dni
+                request.session['user_nombre'] = backend_data.get('usuario', {}).get('nombre', '')
+                
+                return JsonResponse({
+                    'success': True,
+                    'message': '¡Login exitoso! Redirigiendo...',
+                    'redirect_url': '/api/home/'
+                })
+            else:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'DNI o clave incorrectos'
+                })
+                
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({
+                'success': False,
+                'message': f'Error conectando con el servidor: {str(e)}'
+            })
                 
         except json.JSONDecodeError:
             return JsonResponse({
@@ -104,6 +126,7 @@ def procesar_imagen_caja(request):
         try:
             data = json.loads(request.body)
             imagen_base64 = data.get('imagen')
+            user_dni = request.session.get('user_dni', '12345678')
             
             if not imagen_base64:
                 return JsonResponse({
@@ -111,30 +134,36 @@ def procesar_imagen_caja(request):
                     'error': 'No se proporcionó ninguna imagen'
                 }, status=400)
             
-            # TODO: Aquí implementarías tu lógica de reconocimiento de imágenes
-            # Por ahora retornamos datos de ejemplo
-            productos_detectados = [
-                {'id': 1, 'cantidad': 2, 'nombre': 'Item 1', 'precio': 30, 'total': 60},
-                {'id': 2, 'cantidad': 5, 'nombre': 'Item 2', 'precio': 20, 'total': 100},
-                {'id': 3, 'cantidad': 3, 'nombre': 'Item 3', 'precio': 5.25, 'total': 15.75},
-                {'id': 4, 'cantidad': 6, 'nombre': 'Item 4', 'precio': 7, 'total': 42},
-            ]
+            # ✅ LLAMAR AL BACKEND - Detectar objetos
+            response = requests.post(
+                f'{BACKEND_URL}/api/caja/detectarobjetos/',
+                files={'image': imagen_base64},
+                timeout=30
+            )
+
+            if response.status_code == 200:
+                productos_detectados = response.json().get('productos', [])
+                
+                # Guardar productos en la sesión
+                request.session['productos_caja'] = productos_detectados
+                request.session['imagen_caja'] = imagen_base64
             
-            # Guardar productos en la sesión
-            request.session['productos_caja'] = productos_detectados
-            request.session['imagen_caja'] = imagen_base64
+                return JsonResponse({
+                    'success': True,
+                    'productos': productos_detectados,
+                    'total': sum(p.get('subtotal', 0) for p in productos_detectados)
+                })
+            else:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Error al procesar la imagen en el servidor'
+                }, status=500)
             
-            return JsonResponse({
-                'success': True,
-                'productos': productos_detectados,
-                'total': sum(p['total'] for p in productos_detectados)
-            })
-            
-        except json.JSONDecodeError:
+        except requests.exceptions.RequestException as e:
             return JsonResponse({
                 'success': False,
-                'error': 'Error al procesar los datos'
-            }, status=400)
+                'error': f'Error conectando con el servidor: {str(e)}'
+            }, status=500)
         except Exception as e:
             return JsonResponse({
                 'success': False,
@@ -171,7 +200,8 @@ def confirmar_orden_caja(request):
         try:
             data = json.loads(request.body)
             productos = data.get('productos', [])
-            total = data.get('total', 0)
+            cliente_dni = data.get('cliente_dni', None)
+            user_dni = request.session.get('user_dni', '12345678')
             
             if not productos:
                 return JsonResponse({
@@ -179,18 +209,47 @@ def confirmar_orden_caja(request):
                     'error': 'No hay productos para confirmar'
                 }, status=400)
             
-            # TODO: Aquí guardarías la orden en la base de datos
-            # Por ahora solo limpiamos la sesión
-            request.session.pop('productos_caja', None)
-            request.session.pop('imagen_caja', None)
+            # ✅ LLAMAR AL BACKEND - Confirmar compra
+            backend_data = {
+                'usuarioDNI': user_dni,
+                'productos': productos
+            }
             
+            if cliente_dni:
+                backend_data['clienteDNI'] = cliente_dni
+                endpoint = f'{BACKEND_URL}/api/caja/confirmarcompra/'
+            else:
+                endpoint = f'{BACKEND_URL}/api/caja/confirmarsincliente/'
+            
+            response = requests.post(
+                endpoint,
+                json=backend_data,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                # Limpiar sesión
+                request.session.pop('productos_caja', None)
+                request.session.pop('imagen_caja', None)
+                
+                backend_response = response.json()
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Orden confirmada exitosamente',
+                    'orden_id': backend_response.get('venta_id'),
+                    'total': backend_response.get('total')
+                })
+            else:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Error al confirmar la orden en el servidor'
+                }, status=500)
+            
+        except requests.exceptions.RequestException as e:
             return JsonResponse({
-                'success': True,
-                'message': 'Orden confirmada exitosamente',
-                'orden_id': 12345,  # ID de ejemplo
-                'total': total
-            })
-            
+                'success': False,
+                'error': f'Error conectando con el servidor: {str(e)}'
+            }, status=500)
         except json.JSONDecodeError:
             return JsonResponse({
                 'success': False,
