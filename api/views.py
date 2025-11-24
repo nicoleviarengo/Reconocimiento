@@ -94,16 +94,21 @@ def foto_caja_page(request):
 
 def resumen_caja_page(request):
     """Renderiza la página de resumen de caja con productos detectados"""
+    
     # Obtener productos desde la sesión si existen
-    productos = request.session.get('productos_caja', [
-        {'id': 1, 'cantidad': 2, 'nombre': 'Item 1', 'precio': 30, 'total': 60},
-        {'id': 2, 'cantidad': 5, 'nombre': 'Item 2', 'precio': 20, 'total': 100},
-        {'id': 3, 'cantidad': 3, 'nombre': 'Item 3', 'precio': 5.25, 'total': 15.75},
-        {'id': 4, 'cantidad': 6, 'nombre': 'Item 4', 'precio': 7, 'total': 42},
-    ])
+    productos = request.session.get('productos_caja', [])
+    total = request.session.get('total_caja', 0)
+    
+    print("=" * 80)
+    print("📦 RESUMEN CAJA - Productos en sesión:")
+    print(json.dumps(productos, indent=2, ensure_ascii=False))
+    print("=" * 80)
+    if not productos:
+        print("⚠️ No se han detectado productos")
     
     context = {
-        'productos': productos
+        'productos': productos,
+        'total': total,
     }
     return render(request, 'api/resumen_caja.html', context)
 
@@ -120,38 +125,63 @@ def registro_cliente_page(request):
 def procesar_imagen_caja(request):
     """
     API para procesar la imagen de caja y detectar productos
-    Recibe una imagen en base64 y retorna los productos detectados
+    Recibe una imagen como archivo multipart/form-data y retorna los productos detectados
     """
     if request.method == 'POST':
         try:
-            data = json.loads(request.body)
-            imagen_base64 = data.get('imagen')
-            user_dni = request.session.get('user_dni', '12345678')
+            # ✅ Obtener archivo de imagen desde FormData
+            imagen_file = request.FILES.get('image')
             
-            if not imagen_base64:
+            if not imagen_file:
                 return JsonResponse({
                     'success': False,
                     'error': 'No se proporcionó ninguna imagen'
                 }, status=400)
             
-            # ✅ LLAMAR AL BACKEND - Detectar objetos
+            user_dni = request.session.get('user_dni', '12345678')
+            
+            # ✅ LLAMAR AL BACKEND - Detectar objetos enviando el archivo
+            files = {'image': (imagen_file.name, imagen_file.read(), imagen_file.content_type)}
+            
             response = requests.post(
                 f'{BACKEND_URL}/api/caja/detectarobjetos/',
-                files={'image': imagen_base64},
+                files=files,
                 timeout=30
             )
 
             if response.status_code == 200:
-                productos_detectados = response.json().get('productos', [])
+                response_json = response.json()
+
+                print("✅ JSON RECIBIDO:")
+                print(json.dumps(response_json, indent=2, ensure_ascii=False))
+                print("=" * 80)
+
+                productos_nuevos = response_json.get('productos', [])
+                total_nuevos = response_json.get('total', 0)
+
+                # Acumular productos anteriores y nuevos
+                productos_anteriores = request.session.get('productos_caja', [])
+                total_anterior = request.session.get('total_caja', 0)
                 
+                # Combinar productos
+                productos_acumulados = productos_anteriores + productos_nuevos
+                
+                total_acumulado = 0
+                for p in productos_acumulados:
+                    subtotal = p.get('subtotal', 0)
+                    # Convertir a float si es string
+                    if isinstance(subtotal, str):
+                        subtotal = float(subtotal)
+                    total_acumulado += subtotal 
+
                 # Guardar productos en la sesión
-                request.session['productos_caja'] = productos_detectados
-                request.session['imagen_caja'] = imagen_base64
+                request.session['productos_caja'] = productos_acumulados
+                request.session['total_caja'] = total_acumulado
             
                 return JsonResponse({
                     'success': True,
-                    'productos': productos_detectados,
-                    'total': sum(p.get('subtotal', 0) for p in productos_detectados)
+                    'productos': productos_acumulados,
+                    'total': round(total_acumulado, 2)  # Redondear a 2 decimales
                 })
             else:
                 return JsonResponse({
@@ -165,6 +195,52 @@ def procesar_imagen_caja(request):
                 'error': f'Error conectando con el servidor: {str(e)}'
             }, status=500)
         except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=500)
+    
+    return JsonResponse({
+        'success': False,
+        'error': 'Método no permitido'
+    }, status=405)
+
+@csrf_exempt
+def guardar_productos_temporales(request):
+    """
+    Guarda los productos actuales antes de tomar otra foto
+    """
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            productos = data.get('productos', [])
+            
+            # Guardar en sesión
+            request.session['productos_caja'] = productos
+            
+            # Calcular total
+            total = 0
+            for p in productos:
+                subtotal = p.get('subtotal', 0)
+                if isinstance(subtotal, str):
+                    subtotal = float(subtotal)
+                total += subtotal
+            
+            request.session['total_caja'] = total
+            
+            print("=" * 80)
+            print("💾 PRODUCTOS GUARDADOS TEMPORALMENTE:")
+            print(f"Cantidad: {len(productos)}")
+            print(f"Total: ${total}")
+            print("=" * 80)
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Productos guardados'
+            })
+            
+        except Exception as e:
+            print(f"❌ ERROR al guardar: {e}")
             return JsonResponse({
                 'success': False,
                 'error': str(e)

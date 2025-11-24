@@ -1,11 +1,13 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Caja - Reconocimiento 2025</title>
 </head>
+
 <body>
     <div class="container">
         <!-- Header -->
@@ -14,20 +16,26 @@
                 <div class="brand-dot"></div>
                 <span>Reconocimiento 2025</span>
             </div>
-            
+
             <div class="user-info">
                 <div class="user-avatar">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" fill="#a363f1"/>
-                        <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="#a363f1"/>
+                        <path
+                            d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z"
+                            fill="#a363f1" />
+                        <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="#a363f1" />
                     </svg>
                 </div>
                 <span class="user-name">Usuario</span>
                 <button class="logout-btn" onclick="logout()">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path
+                            d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
                     </svg>
                 </button>
             </div>
@@ -36,7 +44,8 @@
         <!-- Back Button -->
         <button class="back-btn" onclick="goToHome()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
             </svg>
             Volver al inicio
         </button>
@@ -46,10 +55,11 @@
             <div class="page-title">
                 <div class="title-icon">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                        <rect x="2" y="8" width="20" height="12" rx="2" fill="white"/>
-                        <path d="M7 12h10M7 15h6" stroke="#10b981" stroke-width="1.5" stroke-linecap="round"/>
-                        <rect x="6" y="4" width="12" height="4" rx="1" fill="white" stroke="#10b981" stroke-width="1.5"/>
-                        <circle cx="18" cy="14" r="2" fill="#10b981"/>
+                        <rect x="2" y="8" width="20" height="12" rx="2" fill="white" />
+                        <path d="M7 12h10M7 15h6" stroke="#10b981" stroke-width="1.5" stroke-linecap="round" />
+                        <rect x="6" y="4" width="12" height="4" rx="1" fill="white" stroke="#10b981"
+                            stroke-width="1.5" />
+                        <circle cx="18" cy="14" r="2" fill="#10b981" />
                     </svg>
                 </div>
                 <h1>Caja</h1>
@@ -57,34 +67,85 @@
 
             <div class="photo-section">
                 <div class="photo-container" id="photoContainer">
+                    <!-- Video de cámara -->
+                    <video id="cameraVideo" autoplay playsinline style="display: none;"></video>
+
+                    <!-- Canvas oculto para captura -->
+                    <canvas id="photoCanvas" style="display: none;"></canvas>
+
+                    <!-- Placeholder inicial -->
                     <div class="photo-placeholder" id="photoPlaceholder">
                         <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
-                            <rect x="3" y="3" width="18" height="18" rx="2" stroke="#cbd5e1" stroke-width="2"/>
-                            <circle cx="8.5" cy="8.5" r="1.5" fill="#cbd5e1"/>
-                            <path d="M3 16L7 12L11 16L15 12L21 18V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V16Z" fill="#cbd5e1"/>
+                            <rect x="3" y="3" width="18" height="18" rx="2" stroke="#cbd5e1" stroke-width="2" />
+                            <circle cx="8.5" cy="8.5" r="1.5" fill="#cbd5e1" />
+                            <path
+                                d="M3 16L7 12L11 16L15 12L21 18V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V16Z"
+                                fill="#cbd5e1" />
                         </svg>
-                        <p>No hay imagen seleccionada</p>
+                        <p>Presiona "Tomar Foto" para iniciar</p>
                     </div>
+
+                    <!-- Preview de imagen capturada -->
                     <img id="photoPreview" class="photo-preview" style="display: none;">
-                    <input type="file" id="photoInput" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
+
+                    <!-- Input oculto para subir archivo -->
+                    <input type="file" id="photoInput" accept="image/*" style="display: none;"
+                        onchange="handlePhotoUpload(event)">
                 </div>
 
                 <div class="button-group">
-                    <button class="action-button primary-btn" onclick="document.getElementById('photoInput').click()">
+                    <!-- Botón principal: Tomar/Capturar foto -->
+                    <button class="action-button primary-btn" id="cameraBtn" onclick="toggleCamera()">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <path d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 3H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <circle cx="12" cy="13" r="4" stroke="white" stroke-width="2"/>
+                            <path
+                                d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 3H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z"
+                                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <circle cx="12" cy="13" r="4" stroke="white" stroke-width="2" />
                         </svg>
-                        Tomar Foto
+                        <span id="cameraBtnText">Tomar Foto</span>
                     </button>
 
-                    <button class="action-button secondary-btn" onclick="goToResumen()" id="resumenBtn" disabled>
+                    <!-- Botón secundario: Subir archivo -->
+                    <button class="action-button secondary-btn" onclick="document.getElementById('photoInput').click()">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <path d="M9 5H7C6.46957 5 5.96086 5.21071 5.58579 5.58579C5.21071 5.96086 5 6.46957 5 7V19C5 19.5304 5.21071 20.0391 5.58579 20.4142C5.96086 20.7893 6.46957 21 7 21H17C17.5304 21 18.0391 20.7893 18.4142 20.4142C18.7893 20.0391 19 19.5304 19 19V7C19 6.46957 18.7893 5.96086 18.4142 5.58579C18.0391 5.96086 17.5304 5 17 5H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M9 5C9 4.46957 9.21071 3.96086 9.58579 3.58579C9.96086 3.21071 10.4696 3 11 3H13C13.5304 3 14.0391 3.21071 14.4142 3.58579C14.7893 3.96086 15 4.46957 15 5C15 5.53043 14.7893 6.03914 14.4142 6.41421C14.0391 6.78929 13.5304 7 13 7H11C10.4696 7 9.96086 6.78929 9.58579 6.41421C9.21071 6.03914 9 5.53043 9 5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M9 12H15M9 16H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path
+                                d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M17 8L12 3L7 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M12 3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
                         </svg>
-                        Resumen
+                        Subir Archivo
+                    </button>
+
+                    <!-- Botón de reiniciar (oculto inicialmente) -->
+                    <button class="action-button secondary-btn" id="retakeBtn" onclick="retakePhoto()"
+                        style="display: none;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M1 4V10H7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M23 20V14H17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path
+                                d="M20.49 9C19.9828 7.56678 19.1209 6.28542 17.9845 5.27542C16.8482 4.26541 15.4745 3.55976 13.9917 3.22426C12.5089 2.88875 10.9652 2.93434 9.50481 3.35677C8.04437 3.77921 6.71475 4.56471 5.64 5.64L1 10M23 14L18.36 18.36C17.2853 19.4353 15.9556 20.2208 14.4952 20.6432C13.0348 21.0657 11.4911 21.1112 10.0083 20.7757C8.52547 20.4402 7.1518 19.7346 6.01547 18.7246C4.87913 17.7146 4.01717 16.4332 3.51 15"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        Tomar Otra
+                    </button>
+
+                    <!-- Botón de procesar imagen -->
+                    <button class="action-button primary-btn" onclick="processImage()" id="processBtn" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path
+                                d="M9 5H7C6.46957 5 5.96086 5.21071 5.58579 5.58579C5.21071 5.96086 5 6.46957 5 7V19C5 19.5304 5.21071 20.0391 5.58579 20.4142C5.96086 20.7893 6.46957 21 7 21H17C17.5304 21 18.0391 20.7893 18.4142 20.4142C18.7893 20.0391 19 19.5304 19 19V7C19 6.46957 18.7893 5.96086 18.4142 5.58579C18.0391 5.96086 17.5304 5 17 5H15"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <path
+                                d="M9 5C9 4.46957 9.21071 3.96086 9.58579 3.58579C9.96086 3.21071 10.4696 3 11 3H13C13.5304 3 14.0391 3.21071 14.4142 3.58579C14.7893 3.96086 15 4.46957 15 5C15 5.53043 14.7893 6.03914 14.4142 6.41421C14.0391 6.78929 13.5304 7 13 7H11C10.4696 7 9.96086 6.78929 9.58579 6.41421C9.21071 6.03914 9 5.53043 9 5Z"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M9 12H15M9 16H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        Procesar y Ver Resumen
                     </button>
                 </div>
             </div>
@@ -92,7 +153,7 @@
             <!-- Loading Overlay -->
             <div class="loading-overlay" id="loadingOverlay" style="display: none;">
                 <div class="loading-spinner"></div>
-                <p>Procesando imagen...</p>
+                <p id="loadingText">Procesando imagen...</p>
             </div>
         </main>
 
@@ -282,7 +343,8 @@
             font-weight: 500;
         }
 
-        .photo-preview {
+        .photo-preview,
+        #cameraVideo {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -317,7 +379,7 @@
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
 
-        .primary-btn:hover {
+        .primary-btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
         }
@@ -335,7 +397,7 @@
             transform: translateY(-2px);
         }
 
-        .secondary-btn:disabled {
+        .action-button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
@@ -367,7 +429,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .loading-overlay p {
@@ -422,35 +486,224 @@
     </style>
 
     <script>
-        let uploadedPhoto = null;
+        let cameraStream = null;
+        let capturedImageBlob = null;
+        let isCameraActive = false;
 
-        function handlePhotoUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    uploadedPhoto = e.target.result;
-                    const preview = document.getElementById('photoPreview');
-                    const placeholder = document.getElementById('photoPlaceholder');
-                    
-                    preview.src = uploadedPhoto;
-                    preview.style.display = 'block';
-                    placeholder.style.display = 'none';
-                    
-                    // Habilitar botón de resumen
-                    document.getElementById('resumenBtn').disabled = false;
-                    
-                    // Simular procesamiento
-                    showLoading();
-                    setTimeout(() => {
-                        hideLoading();
-                    }, 2000);
-                };
-                reader.readAsDataURL(file);
+        // Iniciar/Detener cámara o capturar foto
+        async function toggleCamera() {
+            if (!isCameraActive) {
+                await startCamera();
+            } else {
+                capturePhoto();
             }
         }
 
-        function showLoading() {
+        // Iniciar cámara
+        async function startCamera() {
+            try {
+                const video = document.getElementById('cameraVideo');
+                const placeholder = document.getElementById('photoPlaceholder');
+                const preview = document.getElementById('photoPreview');
+                const cameraBtn = document.getElementById('cameraBtn');
+                const cameraBtnText = document.getElementById('cameraBtnText');
+
+                // Solicitar acceso a la cámara
+                cameraStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: {
+                            ideal: 1280
+                        },
+                        height: {
+                            ideal: 720
+                        },
+                        facingMode: 'environment' // Usar cámara trasera en móviles
+                    }
+                });
+
+                video.srcObject = cameraStream;
+                video.style.display = 'block';
+                placeholder.style.display = 'none';
+                preview.style.display = 'none';
+
+                // Cambiar botón a "Capturar"
+                cameraBtnText.textContent = 'Capturar Foto';
+                isCameraActive = true;
+
+            } catch (error) {
+                console.error('Error al acceder a la cámara:', error);
+                alert('No se pudo acceder a la cámara. Verifica los permisos.');
+            }
+        }
+
+        // Capturar foto desde video
+        function capturePhoto() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.getElementById('photoCanvas');
+            const preview = document.getElementById('photoPreview');
+            const cameraBtn = document.getElementById('cameraBtn');
+            const cameraBtnText = document.getElementById('cameraBtnText');
+            const retakeBtn = document.getElementById('retakeBtn');
+            const processBtn = document.getElementById('processBtn');
+
+            // Configurar canvas con dimensiones del video
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            // Dibujar frame actual del video en canvas
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0);
+
+            // Convertir canvas a blob (archivo de imagen)
+            canvas.toBlob((blob) => {
+                capturedImageBlob = blob;
+
+                // Mostrar preview
+                const url = URL.createObjectURL(blob);
+                preview.src = url;
+                preview.style.display = 'block';
+                video.style.display = 'none';
+
+                // Detener cámara
+                stopCamera();
+
+                // Actualizar botones
+                cameraBtn.style.display = 'none';
+                retakeBtn.style.display = 'inline-flex';
+                processBtn.disabled = false;
+                isCameraActive = false;
+
+            }, 'image/jpeg', 0.9);
+        }
+
+        // Detener cámara
+        function stopCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+        }
+
+        // Tomar otra foto
+        function retakePhoto() {
+            const video = document.getElementById('cameraVideo');
+            const preview = document.getElementById('photoPreview');
+            const placeholder = document.getElementById('photoPlaceholder');
+            const cameraBtn = document.getElementById('cameraBtn');
+            const cameraBtnText = document.getElementById('cameraBtnText');
+            const retakeBtn = document.getElementById('retakeBtn');
+            const processBtn = document.getElementById('processBtn');
+
+            // Limpiar estado
+            capturedImageBlob = null;
+            preview.style.display = 'none';
+            placeholder.style.display = 'flex';
+
+            // Resetear botones
+            cameraBtn.style.display = 'inline-flex';
+            cameraBtnText.textContent = 'Tomar Foto';
+            retakeBtn.style.display = 'none';
+            processBtn.disabled = true;
+            isCameraActive = false;
+        }
+
+        // Subir archivo desde input
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                capturedImageBlob = file;
+                const preview = document.getElementById('photoPreview');
+                const placeholder = document.getElementById('photoPlaceholder');
+                const video = document.getElementById('cameraVideo');
+                const cameraBtn = document.getElementById('cameraBtn');
+                const retakeBtn = document.getElementById('retakeBtn');
+                const processBtn = document.getElementById('processBtn');
+
+                // Detener cámara si está activa
+                stopCamera();
+
+                // Mostrar preview
+                const url = URL.createObjectURL(file);
+                preview.src = url;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+                video.style.display = 'none';
+
+                // Actualizar botones
+                cameraBtn.style.display = 'none';
+                retakeBtn.style.display = 'inline-flex';
+                processBtn.disabled = false;
+            }
+        }
+
+        // Procesar imagen y enviar al backend
+        async function processImage() {
+            if (!capturedImageBlob) {
+                alert('No hay imagen para procesar');
+                return;
+            }
+
+            showLoading('Enviando imagen al servidor...');
+
+            try {
+                // Crear FormData con la imagen
+                const formData = new FormData();
+                formData.append('image', capturedImageBlob, 'foto_caja.jpg');
+
+                //  URL que se genera
+                const url = '{% url "procesar_imagen_caja" %}';
+                console.log('🔵 URL generada:', url);
+                console.log('🔵 Blob:', capturedImageBlob);
+
+                // Enviar al backend de Django
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                });
+
+                console.log('🟢 Response status:', response.status);
+                console.log('🟢 Response ok:', response.ok);
+
+                const data = await response.json();
+                console.log('Response data:', data);
+
+                if (data.success) {
+                    hideLoading();
+                    // Redirigir a resumen con los productos detectados
+                    window.location.href = '/api/caja/resumen/';
+                } else {
+                    hideLoading();
+                    alert('Error: ' + (data.error || 'No se pudo procesar la imagen'));
+                }
+
+            } catch (error) {
+                hideLoading();
+                console.error('Error:', error);
+                alert('Error al conectar con el servidor: ' + error.message);
+            }
+        }
+
+        // Obtener cookie CSRF
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function showLoading(text = 'Procesando imagen...') {
+            document.getElementById('loadingText').textContent = text;
             document.getElementById('loadingOverlay').style.display = 'flex';
         }
 
@@ -459,28 +712,29 @@
         }
 
         function goToHome() {
+            // Detener cámara antes de salir
+            stopCamera();
             window.location.href = '/api/home/';
-        }
-
-        function goToResumen() {
-            if (uploadedPhoto) {
-                console.log('Navegando a resumen...');
-                window.location.href = '/api/caja/resumen/';
-            }
         }
 
         function logout() {
             if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                stopCamera();
                 window.location.href = '/api/login/';
             }
         }
 
+        // Detener cámara al salir de la página
+        window.addEventListener('beforeunload', () => {
+            stopCamera();
+        });
+
         // Animación de entrada
-        window.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('DOMContentLoaded', function () {
             const photoSection = document.querySelector('.photo-section');
             photoSection.style.opacity = '0';
             photoSection.style.transform = 'translateY(20px)';
-            
+
             setTimeout(() => {
                 photoSection.style.transition = 'all 0.6s ease';
                 photoSection.style.opacity = '1';
@@ -489,4 +743,5 @@
         });
     </script>
 </body>
+
 </html>
