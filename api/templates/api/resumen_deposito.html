@@ -194,7 +194,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            display: none;
         }
 
         .photo-placeholder {
@@ -306,9 +305,53 @@
             box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
         }
 
-        .primary-btn:hover {
+        .primary-btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .primary-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #f59e0b;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .footer {
@@ -318,6 +361,36 @@
             font-size: 14px;
             border-top: 1px solid #e5e7eb;
             margin-top: 40px;
+        }
+
+        .stats-summary {
+            background: #fef3c7;
+            border: 2px solid #fbbf24;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #78350f;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            color: #92400e;
+            font-weight: 700;
         }
 
         @media (max-width: 1024px) {
@@ -420,8 +493,10 @@
                         <h2>Imagen Capturada</h2>
                     </div>
                     <div class="photo-preview-container">
-                        <img id="capturedPhoto" src="" alt="Foto capturada" class="captured-image">
-                        <div class="photo-placeholder" id="photoPlaceholder">
+                        {% if request.session.imagen_deposito %}
+                        <img src="{{ request.session.imagen_deposito }}" alt="Foto capturada" class="captured-image">
+                        {% else %}
+                        <div class="photo-placeholder">
                             <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
                                 <rect x="3" y="3" width="18" height="18" rx="2" stroke="#cbd5e1" stroke-width="2"/>
                                 <circle cx="8.5" cy="8.5" r="1.5" fill="#cbd5e1"/>
@@ -429,6 +504,7 @@
                             </svg>
                             <p>No hay imagen</p>
                         </div>
+                        {% endif %}
                     </div>
                     <button class="secondary-btn" onclick="addNewPhoto()">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -442,6 +518,17 @@
                     <div class="card-header">
                         <h2>Productos Detectados</h2>
                     </div>
+
+                    <div class="stats-summary">
+                        <div class="stat-item">
+                            <span class="stat-label">Total Productos</span>
+                            <span class="stat-value" id="totalProductos">{{ productos|length }}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Total Cantidad</span>
+                            <span class="stat-value" id="totalCantidad">0</span>
+                        </div>
+                    </div>
                     
                     <div class="table-container">
                         <table class="products-table">
@@ -454,17 +541,30 @@
                             </thead>
                             <tbody id="productsBody">
                                 {% for producto in productos %}
-                                <tr>
+                                <tr data-id="{{ producto.id }}">
                                     <td>{{ forloop.counter }}</td>
-                                    <td><input type="number" value="{{ producto.cantidad }}" class="qty-input" min="0"></td>
+                                    <td>
+                                        <input type="number" 
+                                               value="{{ producto.cantidad }}" 
+                                               class="qty-input" 
+                                               min="0"
+                                               data-nombre="{{ producto.nombre }}"
+                                               onchange="actualizarTotales()">
+                                    </td>
                                     <td>{{ producto.nombre }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" style="text-align: center; color: #9ca3af; padding: 32px;">
+                                        No se detectaron productos
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
 
-                    <button class="primary-btn" onclick="confirmTransfer()">
+                    <button class="primary-btn" onclick="confirmTransfer()" id="btnConfirm">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                             <path d="M20 6L9 17L4 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
@@ -477,6 +577,14 @@
         <footer class="footer">
             <p>© Proyecto Reconocimiento de imágenes 2025</p>
         </footer>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p style="font-weight: 600; color: #111827;">Confirmando transferencia...</p>
+            <p style="color: #6b7280; margin-top: 8px;">Por favor espera</p>
+        </div>
     </div>
 
     <script>
@@ -492,21 +600,92 @@
                     card.style.transform = 'translateY(0)';
                 }, index * 150);
             });
+
+            actualizarTotales();
         });
 
-        function addNewPhoto() {
-            window.location.href = '/api/deposito/foto/';
+        function actualizarTotales() {
+            const inputs = document.querySelectorAll('.qty-input');
+            let total = 0;
+            
+            inputs.forEach(input => {
+                const cantidad = parseInt(input.value) || 0;
+                total += cantidad;
+            });
+
+            document.getElementById('totalCantidad').textContent = total;
         }
 
-        function confirmTransfer() {
-            if (confirm('¿Confirmar la transferencia de estos productos?')) {
-                // TODO: Aquí se enviarían los datos al servidor
-                window.location.href = '/api/deposito/confirmada/';
+        function addNewPhoto() {
+            if (confirm('¿Deseas capturar una nueva imagen? Los productos actuales se perderán.')) {
+                window.location.href = '/api/deposito/foto/';
+            }
+        }
+
+        async function confirmTransfer() {
+            const inputs = document.querySelectorAll('.qty-input');
+            const productos = [];
+            
+            inputs.forEach(input => {
+                const cantidad = parseInt(input.value) || 0;
+                if (cantidad > 0) {
+                    productos.push({
+                        nombre: input.dataset.nombre,
+                        cantidad: cantidad
+                    });
+                }
+            });
+
+            if (productos.length === 0) {
+                alert('Debes tener al menos un producto con cantidad mayor a 0');
+                return;
+            }
+
+            if (!confirm('¿Confirmar la transferencia de estos productos?')) {
+                return;
+            }
+
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const btnConfirm = document.getElementById('btnConfirm');
+            
+            loadingOverlay.classList.add('active');
+            btnConfirm.disabled = true;
+
+            try {
+                const response = await fetch('/api/deposito/confirmar/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        productos: productos,
+                        almacen_origen: 'Depósito 1',
+                        almacen_destino: 'Depósito 2'
+                    })
+                });
+
+                const data = await response.json();
+
+                loadingOverlay.classList.remove('active');
+
+                if (data.success) {
+                    window.location.href = '/api/deposito/confirmada/';
+                } else {
+                    alert('Error al confirmar la transferencia: ' + (data.error || 'Error desconocido'));
+                    btnConfirm.disabled = false;
+                }
+            } catch (error) {
+                loadingOverlay.classList.remove('active');
+                btnConfirm.disabled = false;
+                console.error('Error:', error);
+                alert('Error al confirmar la transferencia. Por favor intenta de nuevo.');
             }
         }
 
         function goBack() {
-            window.location.href = '/api/deposito/foto/';
+            if (confirm('¿Deseas volver? Los cambios no guardados se perderán.')) {
+                window.location.href = '/api/deposito/foto/';
+            }
         }
 
         function logout() {

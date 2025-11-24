@@ -372,18 +372,152 @@ def deposito_confirmada_page(request):
 
 @csrf_exempt
 def procesar_imagen_deposito(request):
-    """API para procesar imagen de depósito (placeholder)"""
+    """
+    API para procesar la imagen de depósito y detectar productos
+    Recibe una imagen en base64 y retorna los productos detectados
+    """
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            imagen_base64 = data.get('imagen')
+            
+            if not imagen_base64:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'No se proporcionó ninguna imagen'
+                }, status=400)
+            
+            # Decodificar la imagen base64
+            import base64
+            from io import BytesIO
+            
+            # Remover el prefijo 'data:image/jpeg;base64,' si existe
+            if ',' in imagen_base64:
+                imagen_base64 = imagen_base64.split(',')[1]
+            
+            imagen_bytes = base64.b64decode(imagen_base64)
+            
+            # URL del microservicio (ajusta según tu configuración)
+            MICROSERVICIO_URL = getattr(settings, 'MICROSERVICIO_URL', 'http://localhost:5000')
+            
+            # Enviar la imagen al microservicio
+            files = {'image': ('image.jpg', BytesIO(imagen_bytes), 'image/jpeg')}
+            response = requests.post(
+                f'{MICROSERVICIO_URL}/predict',
+                files=files,
+                data={'conf_threshold': 0.25},
+                timeout=30
+            )
+            
+            if response.status_code != 200:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Error al procesar la imagen en el microservicio'
+                }, status=500)
+            
+            resultado = response.json()
+            productos_detectados = []
+            
+            # Convertir el formato del microservicio al formato esperado por el frontend
+            for idx, obj in enumerate(resultado.get('objects', []), start=1):
+                productos_detectados.append({
+                    'id': idx,
+                    'cantidad': obj['cantidad'],
+                    'nombre': obj['nombre']
+                })
+            
+            # Guardar productos en la sesión
+            request.session['productos_deposito'] = productos_detectados
+            request.session['imagen_deposito'] = imagen_base64
+            
+            return JsonResponse({
+                'success': True,
+                'productos': productos_detectados
+            })
+            
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({
+                'success': False,
+                'error': f'Error al conectar con el microservicio: {str(e)}'
+            }, status=500)
+        except json.JSONDecodeError:
+            return JsonResponse({
+                'success': False,
+                'error': 'Error al procesar los datos'
+            }, status=400)
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': f'Error inesperado: {str(e)}'
+            }, status=500)
+    
     return JsonResponse({
         'success': False,
-        'message': 'Funcionalidad en desarrollo'
-    })
+        'error': 'Método no permitido'
+    }, status=405)
 
 
 @csrf_exempt
 def confirmar_inventario_deposito(request):
-    """API para confirmar inventario de depósito (placeholder)"""
+    """
+    API para confirmar inventario de depósito
+    Recibe los productos finales y procesa la transferencia
+    """
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            productos = data.get('productos', [])
+            almacen_origen = data.get('almacen_origen', '')
+            almacen_destino = data.get('almacen_destino', '')
+            
+            if not productos:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'No hay productos para confirmar'
+                }, status=400)
+            
+            # Calcular total de cantidades
+            total_cantidad = sum(p['cantidad'] for p in productos)
+            
+            # Guardar en historial de depósito
+            historial = request.session.get('historial_deposito', [])
+            
+            # Agregar nuevos productos al historial
+            for producto in productos:
+                historial.append({
+                    'id': len(historial) + 1,
+                    'cantidad': producto['cantidad'],
+                    'nombre': producto['nombre']
+                })
+            
+            request.session['historial_deposito'] = historial
+            
+            # TODO: Aquí guardarías la transferencia en la base de datos
+            # Por ahora solo limpiamos los datos temporales
+            request.session.pop('productos_deposito', None)
+            request.session.pop('imagen_deposito', None)
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Transferencia confirmada exitosamente',
+                'transferencia_id': 12345,  # ID de ejemplo
+                'total_productos': len(productos),
+                'total_cantidad': total_cantidad
+            })
+            
+        except json.JSONDecodeError:
+            return JsonResponse({
+                'success': False,
+                'error': 'Error al procesar los datos'
+            }, status=400)
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=500)
+    
     return JsonResponse({
         'success': False,
-        'message': 'Funcionalidad en desarrollo'
-    })
+        'error': 'Método no permitido'
+    }, status=405)
 
