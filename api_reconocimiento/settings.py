@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'api',
     'corsheaders',
     'django_extensions'
+    
 ]
 
 MIDDLEWARE = [
@@ -144,3 +145,5 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MICROSERVICIO_URL = 'http://localhost:5000'  # O la URL donde esté corriendo tu microservicio
