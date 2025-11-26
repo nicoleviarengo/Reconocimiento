@@ -724,17 +724,17 @@
                             <!--<p>No hay imagen</p>-->
                         </div>
                     </div>
-                    <button class="add-manual-btn" onclick="openProductCatalog()">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                        </svg>
-                        Agregar Producto Manual
-                    </button>
                     <button class="secondary-btn" onclick="addNewPhoto()">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                             <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                         </svg>
-                        Agregar más productos (Foto)
+                        Detectar más productos 📷
+                    </button>
+                    <button class="add-manual-btn" onclick="openProductCatalog()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        Añadir Producto Manualmente
                     </button>
                 </div>
 
@@ -759,7 +759,7 @@
                             <tbody id="productsBody">
                                 {% if productos %}
                                 {% for producto in productos %}
-                                <tr>
+                                <tr data-product-id="{{ producto.id|default:'' }}">
                                     <td>{{ forloop.counter }}</td>
                                     <td><input type="number" value="{{ producto.cantidad }}" class="qty-input" min="1"
                                             onchange="updateTotal(this)"></td>
@@ -791,6 +791,76 @@
                         <div class="total-summary">
                             <span class="total-label">Total:</span>
                             <span class="total-amount" id="grandTotal">$217.75</span>
+                        </div>
+                    </div>
+
+                    <!-- Sección de datos del cliente -->
+                    <div class="client-section"
+                        style="margin-bottom: 16px; padding: 20px; background: #f9fafb; border-radius: 12px;">
+                        <h3 style="font-size: 16px; font-weight: 600; color: #374151; margin-bottom: 16px;">
+                            👤 Datos del Cliente (opcional)
+                        </h3>
+
+                        <!-- DNI y botón buscar -->
+                        <div style="display: flex; gap: 12px; margin-bottom: 12px;">
+                            <div style="flex: 1;">
+                                <label for="clientDNI"
+                                    style="display: block; font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 6px;">
+                                    DNI:
+                                </label>
+                                <input type="text" id="clientDNI" placeholder="Ingrese DNI"
+                                    style="width: 100%; padding: 10px 14px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 15px;"
+                                    onfocus="this.style.borderColor='#a363f1'" onblur="this.style.borderColor='#e5e7eb'"
+                                    oninput="validarDNI(this)" maxlength="8">
+                            </div>
+                            <div style="display: flex; align-items: flex-end;">
+                                <button onclick="buscarCliente()"
+                                    style="padding: 10px 20px; background: linear-gradient(135deg, #a363f1 0%, #7e56eb 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap;"
+                                    onmouseover="this.style.transform='translateY(-2px)'"
+                                    onmouseout="this.style.transform='translateY(0)'">
+                                    🔍 Buscar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Mensaje de estado -->
+                        <div id="clientSearchMessage"
+                            style="display: none; padding: 10px 14px; border-radius: 8px; font-size: 14px; margin-bottom: 12px;">
+                        </div>
+
+                        <!-- Campos adicionales (ocultos inicialmente) -->
+                        <div id="clientAdditionalFields" style="display: none;">
+                            <div style="margin-bottom: 12px;">
+                                <label for="clientNombre"
+                                    style="display: block; font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 6px;">
+                                    Nombre:
+                                </label>
+                                <input type="text" id="clientNombre" placeholder="Nombre del cliente"
+                                    style="width: 100%; padding: 10px 14px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 15px;"
+                                    onfocus="this.style.borderColor='#a363f1'" onblur="this.style.borderColor='#e5e7eb'"
+                                    oninput="validarNombre(this); verificarCamposCliente()">
+                            </div>
+                            <div style="margin-bottom: 12px;">
+                                <label for="clientTelefono"
+                                    style="display: block; font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 6px;">
+                                    Teléfono:
+                                </label>
+                                <input type="tel" id="clientTelefono" placeholder="+549123456789"
+                                    style="width: 100%; padding: 10px 14px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 15px;"
+                                    onfocus="this.style.borderColor='#a363f1'" onblur="this.style.borderColor='#e5e7eb'"
+                                    oninput="validarTelefono(this); verificarCamposCliente()">
+                            </div>
+
+                            <!-- Botón de registrar cliente (oculto inicialmente) -->
+                            <div id="registerClientContainer" style="display: none; margin-top: 12px;">
+                                <button id="registerClientBtn" onclick="registrarCliente()"
+                                    style="width: 100%; padding: 12px 20px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 15px;"
+                                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(16, 185, 129, 0.3)'"
+                                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+                                    disabled>
+                                    ✅ Registrar Cliente
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -840,25 +910,98 @@
 
     <script>
         // ✅ CATÁLOGO DE PRODUCTOS - Definir al inicio
+        // ⚠️ IMPORTANTE: Estos IDs son temporales hasta que el backend los proporcione
         const PRODUCTOS_CATALOGO = [{
+                id: 4,
                 nombre: "Pure de Tomate",
                 precio_unitario: "150.00"
             },
             {
+                id: 5,
                 nombre: "Lata choclo cremoso",
                 precio_unitario: "180.00"
             },
             {
+                id: 6,
                 nombre: "Arroz Gallo Oro",
                 precio_unitario: "250.00"
             },
             {
+                id: 7,
                 nombre: "Galletitas Toddy",
                 precio_unitario: "120.00"
             }
         ];
 
         let selectedProduct = null;
+
+        //  FUNCIÓN PARA IMPRIMIR RESUMEN EN CONSOLA
+        function logResumenDetalle(evento) {
+            const rows = document.querySelectorAll('#productsBody tr');
+            const productos = [];
+            let total = 0;
+
+            rows.forEach((row, index) => {
+                if (row.querySelector('.qty-input')) {
+                    const cantidad = parseInt(row.querySelector('.qty-input').value);
+                    const nombre = row.cells[2].textContent.trim();
+                    const precioUnit = parseFloat(row.cells[3].textContent.replace('$', '').trim());
+                    const subtotal = parseFloat(row.querySelector('.total-cell').textContent.replace('$', '')
+                        .trim());
+                    const productId = row.getAttribute('data-product-id') || 'sin-id';
+
+                    productos.push({
+                        id: productId,
+                        nombre: nombre,
+                        cantidad: cantidad,
+                        precio_unitario: precioUnit,
+                        subtotal: subtotal
+                    });
+
+                    total += subtotal;
+                }
+            });
+
+            console.log('═'.repeat(80));
+            console.log(`📊 RESUMEN DE CAJA - ${evento}`);
+            console.log('═'.repeat(80));
+            console.log(`🕐 Timestamp: ${new Date().toLocaleString('es-AR')}`);
+            console.log(`📦 Total productos: ${productos.length}`);
+            console.log('─'.repeat(80));
+
+            if (productos.length > 0) {
+                let productosConId = 0;
+                let productosSinId = 0;
+
+                productos.forEach((p, i) => {
+                    const tieneId = p.id && p.id !== 'sin-id' && p.id !== '';
+                    if (tieneId) {
+                        productosConId++;
+                    } else {
+                        productosSinId++;
+                    }
+
+                    const idStatus = tieneId ? `✅ ${p.id}` : '❌ SIN ID';
+                    console.log(`${i + 1}. ${p.nombre}`);
+                    console.log(
+                        `   ID: ${idStatus} | Cant: ${p.cantidad} | P.Unit: $${p.precio_unitario.toFixed(2)} | Subtotal: $${p.subtotal.toFixed(2)}`
+                    );
+                });
+                console.log('─'.repeat(80));
+                console.log(`💰 TOTAL: $${total.toFixed(2)}`);
+                console.log('─'.repeat(80));
+                console.log(`🔍 Estado de IDs: ${productosConId} con ID ✅ | ${productosSinId} sin ID ❌`);
+            } else {
+                console.log('⚠️  No hay productos en el resumen');
+            }
+
+            console.log('═'.repeat(80));
+
+            return {
+                productos,
+                total
+            };
+        }
 
         window.addEventListener('DOMContentLoaded', function () {
             const cards = document.querySelectorAll('.photo-card, .table-card');
@@ -875,6 +1018,9 @@
 
             updateProductCount();
             calculateGrandTotal();
+
+            // Log inicial al cargar la página
+            logResumenDetalle('CARGA INICIAL');
         });
 
         // ✅ ABRIR CATÁLOGO
@@ -986,6 +1132,9 @@
             closeCatalog();
 
             console.log('✅ Producto manual agregado:', selectedProduct.nombre, 'x', quantity);
+
+            // Log del resumen actualizado
+            logResumenDetalle('PRODUCTO MANUAL AGREGADO');
         }
 
         function updateTotal(input) {
@@ -997,11 +1146,20 @@
 
             row.querySelector('.total-cell').textContent = '$' + total.toFixed(2);
             calculateGrandTotal();
+
+            // Log cuando se modifica cantidad
+            const nombreProducto = row.cells[2].textContent.trim();
+            console.log(`🔄 Cantidad modificada: ${nombreProducto} -> ${quantity} unidades`);
+            logResumenDetalle('MODIFICACIÓN DE CANTIDAD');
         }
 
         function deleteRow(button) {
             if (confirm('¿Eliminar este producto?')) {
                 const row = button.closest('tr');
+                const nombreProducto = row.cells[2].textContent.trim();
+
+                console.log(`🗑️ Eliminando producto: ${nombreProducto}`);
+
                 row.style.opacity = '0';
                 row.style.transform = 'translateX(-20px)';
 
@@ -1021,6 +1179,9 @@
                             confirmBtn.disabled = true;
                         }
                     }
+
+                    // Log después de eliminar
+                    logResumenDetalle('ELIMINACIÓN DE PRODUCTO');
                 }, 300);
             }
         }
@@ -1146,6 +1307,10 @@
             const newRow = document.createElement('tr');
             const rowCount = tbody.querySelectorAll('tr').length + 1;
 
+            // ⚠️ Productos manuales también necesitan ID
+            // Por ahora se deja vacío hasta coordinar con backend
+            newRow.setAttribute('data-product-id', selectedProduct.id || '');
+
             newRow.innerHTML = `
                 <td>${rowCount}</td>
                 <td><input type="number" value="${quantity}" class="qty-input" min="1" onchange="updateTotal(this)"></td>
@@ -1177,6 +1342,9 @@
             closeCatalog();
 
             console.log('✅ Producto manual agregado:', selectedProduct.nombre, 'x', quantity);
+
+            // Log del resumen actualizado
+            logResumenDetalle('PRODUCTO MANUAL AGREGADO');
         }
 
         function addNewPhoto() {
@@ -1192,7 +1360,10 @@
                     const precioText = cells[3].textContent.replace('$', '').trim();
                     const subtotalText = cells[4].textContent.replace('$', '').trim();
 
+                    const productId = row.getAttribute('data-product-id') || null;
+
                     products.push({
+                        id: productId,
                         cantidad: quantity,
                         nombre: nombre,
                         precio_unitario: precioText,
@@ -1232,7 +1403,12 @@
         }
 
         function confirmOrder() {
-            const total = document.getElementById('grandTotal').textContent;
+            const total = document.getElementById('grandTotal').textContent.replace('$', '').trim();
+
+            // Obtener datos del cliente (si están completos)
+            const clientDNI = document.getElementById('clientDNI').value.trim();
+            const clientNombre = document.getElementById('clientNombre').value.trim();
+            const clientTelefono = document.getElementById('clientTelefono').value.trim();
 
             // Recopilar productos actuales
             const products = [];
@@ -1240,13 +1416,16 @@
 
             rows.forEach(row => {
                 const cells = row.cells;
-                if (cells.length >= 5) {
+                if (cells.length >= 5 && row.querySelector('.qty-input')) {
                     const quantity = parseInt(row.querySelector('.qty-input').value);
                     const nombre = cells[2].textContent.trim();
                     const precioText = cells[3].textContent.replace('$', '').trim();
                     const subtotalText = cells[4].textContent.replace('$', '').trim();
 
+                    const productId = row.getAttribute('data-product-id') || null;
+
                     products.push({
+                        id: productId,
                         cantidad: quantity,
                         nombre: nombre,
                         precio_unitario: precioText,
@@ -1260,8 +1439,382 @@
                 return;
             }
 
-            if (confirm('Confirmar orden con total de ' + total + '?')) {
-                window.location.href = '{% url "registro_cliente" %}';
+            // Log antes de confirmar
+            console.log('🔔 Intentando confirmar orden...');
+            console.log('👤 Datos del cliente:', {
+                dni: clientDNI,
+                nombre: clientNombre,
+                telefono: clientTelefono
+            });
+            logResumenDetalle('PRE-CONFIRMACIÓN');
+
+            if (!confirm('¿Confirmar orden con total de $' + total + '?')) {
+                console.log('❌ Confirmación cancelada por el usuario');
+                return;
+            }
+
+            // Deshabilitar botón para evitar doble click
+            const confirmBtn = document.querySelector('.confirm-btn');
+            confirmBtn.disabled = true;
+            confirmBtn.style.opacity = '0.6';
+            confirmBtn.innerHTML = '⏳ Procesando...';
+
+            // 1️⃣ ENVIAR COMPRA AL BACKEND
+            const backendData = {
+                productos: products.map(p => ({
+                    id: p.id || 0, // Si no hay id, enviar 0 (temporal)
+                    cantidad: p.cantidad
+                })),
+                usuarioDNI: "{{ request.session.user_dni }}", // DNI del cajero
+                clienteDNI: clientDNI || null,
+            };
+
+            console.log('📤 Enviando al backend:', backendData);
+
+            fetch('http://localhost:8000/api/caja/confirmarcompra/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(backendData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('✅ Respuesta del backend:', data);
+
+                    // 2️⃣ GENERAR MENSAJE DE WHATSAPP SI HAY TELÉFONO
+                    if (clientTelefono) {
+                        const message = generateWhatsAppMessage(products, total);
+                        // Limpiar el número de teléfono (quitar espacios, guiones, etc)
+                        const cleanPhone = clientTelefono.replace(/[\s\-\(\)]/g, '');
+                        const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+
+                        console.log('📱 Abriendo WhatsApp para:', cleanPhone);
+                        window.open(whatsappUrl, '_blank');
+                    }
+
+                    // Limpiar sesión después de confirmar
+                    console.log('🧹 Limpiando sesión...');
+                    fetch('{% url "limpiar_sesion_caja" %}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': getCookie('csrftoken')
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('✅ Sesión limpiada:', data);
+
+                            // Redirigir a página de confirmación después de limpiar
+                            setTimeout(() => {
+                                window.location.href = '{% url "compra_confirmada" %}';
+                            }, 1000);
+                        })
+                        .catch(error => {
+                            console.error('❌ Error al limpiar sesión:', error);
+
+                            // Redirigir de todas formas
+                            setTimeout(() => {
+                                window.location.href = '{% url "compra_confirmada" %}';
+                            }, 1000);
+                        });
+                })
+                .catch(error => {
+                    console.error('❌ Error al confirmar compra:', error);
+                    alert('Error al confirmar la compra. Por favor, intenta nuevamente.');
+
+                    // Rehabilitar botón
+                    confirmBtn.disabled = false;
+                    confirmBtn.style.opacity = '1';
+                    confirmBtn.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M20 6L9 17L4 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Confirmar
+                `;
+                });
+        }
+
+        function generateWhatsAppMessage(products, total) {
+            const now = new Date();
+            const fecha = now.toLocaleDateString('es-AR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+
+            let message = `Hola! 👋\n\n`;
+            message += `🧾 Tu ticket de compra\n`;
+            message += `📅 Fecha: ${fecha}\n\n`;
+            message += `🛒 Detalle de productos:\n`;
+
+            products.forEach(product => {
+                const precio = parseFloat(product.precio_unitario);
+                const subtotal = parseFloat(product.subtotal);
+
+                message += `• ${product.nombre}\n`;
+                message +=
+                    `   Cant: ${product.cantidad}  |  $${precio.toFixed(2)} c/u  |  Subtotal: $${subtotal.toFixed(2)}\n\n`;
+            });
+
+            message += `💵 Total a pagar: $${total}\n\n`;
+            message += `¡Gracias por tu compra! 🙌`;
+
+            return message;
+        }
+
+        // 🔍 BUSCAR CLIENTE POR DNI
+        async function buscarCliente() {
+            const dniInput = document.getElementById('clientDNI');
+            const dni = dniInput.value.trim();
+
+            if (!dni) {
+                mostrarMensajeCliente('Por favor ingrese un DNI', 'error');
+                return;
+            }
+
+            console.log('🔍 Buscando cliente con DNI:', dni);
+
+            // Mostrar mensaje de búsqueda
+            mostrarMensajeCliente('Buscando cliente...', 'info');
+
+            try {
+                const response = await fetch('http://localhost:8000/api/caja/validarcliente/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        dni: dni
+                    })
+                });
+
+                const data = await response.json();
+                console.log('✅ Respuesta del backend:', data);
+
+                // Mostrar campos adicionales
+                document.getElementById('clientAdditionalFields').style.display = 'block';
+
+                if (data.success && data.cliente) {
+                    // Cliente encontrado - llenar campos
+                    console.log('✅ Cliente encontrado:', data.cliente);
+
+                    document.getElementById('clientNombre').value = data.cliente.nombre || '';
+                    document.getElementById('clientTelefono').value = data.cliente.telefono || '';
+
+                    mostrarMensajeCliente('✅ ' + data.message, 'success');
+
+                    // Hacer los campos de solo lectura si el cliente existe
+                    document.getElementById('clientNombre').readOnly = true;
+                    document.getElementById('clientTelefono').readOnly = true;
+                    document.getElementById('clientNombre').style.backgroundColor = '#f9fafb';
+                    document.getElementById('clientTelefono').style.backgroundColor = '#f9fafb';
+
+                    // Ocultar botón de registro
+                    document.getElementById('registerClientContainer').style.display = 'none';
+                } else {
+                    // Cliente no encontrado - limpiar campos para nuevo registro
+                    console.log('⚠️ Cliente no encontrado');
+
+                    document.getElementById('clientNombre').value = '';
+                    document.getElementById('clientTelefono').value = '';
+
+                    mostrarMensajeCliente('⚠️ ' + data.message + '. Complete los datos para registrar.', 'warning');
+
+                    // Hacer los campos editables
+                    document.getElementById('clientNombre').readOnly = false;
+                    document.getElementById('clientTelefono').readOnly = false;
+                    document.getElementById('clientNombre').style.backgroundColor = 'white';
+                    document.getElementById('clientTelefono').style.backgroundColor = 'white';
+
+                    // Enfocar en el campo nombre
+                    document.getElementById('clientNombre').focus();
+
+                    // Verificar si se debe mostrar botón de registro
+                    verificarCamposCliente();
+                }
+
+            } catch (error) {
+                console.error('❌ Error al buscar cliente:', error);
+                mostrarMensajeCliente('❌ Error al conectar con el servidor', 'error');
+
+                // Mostrar campos para permitir ingreso manual
+                document.getElementById('clientAdditionalFields').style.display = 'block';
+                document.getElementById('clientNombre').value = '';
+                document.getElementById('clientTelefono').value = '';
+                document.getElementById('clientNombre').readOnly = false;
+                document.getElementById('clientTelefono').readOnly = false;
+            }
+        }
+
+        function mostrarMensajeCliente(mensaje, tipo) {
+            const messageDiv = document.getElementById('clientSearchMessage');
+            messageDiv.textContent = mensaje;
+            messageDiv.style.display = 'block';
+
+            // Estilos según el tipo
+            if (tipo === 'success') {
+                messageDiv.style.backgroundColor = '#d1fae5';
+                messageDiv.style.color = '#065f46';
+                messageDiv.style.border = '2px solid #10b981';
+            } else if (tipo === 'error') {
+                messageDiv.style.backgroundColor = '#fee2e2';
+                messageDiv.style.color = '#991b1b';
+                messageDiv.style.border = '2px solid #ef4444';
+            } else if (tipo === 'warning') {
+                messageDiv.style.backgroundColor = '#fef3c7';
+                messageDiv.style.color = '#92400e';
+                messageDiv.style.border = '2px solid #f59e0b';
+            } else if (tipo === 'info') {
+                messageDiv.style.backgroundColor = '#dbeafe';
+                messageDiv.style.color = '#1e40af';
+                messageDiv.style.border = '2px solid #3b82f6';
+            }
+
+            // Ocultar mensaje después de 5 segundos si no es error
+            if (tipo !== 'error' && tipo !== 'warning') {
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // 🔢 VALIDAR DNI - Solo números
+        function validarDNI(input) {
+            // Permitir solo números
+            input.value = input.value.replace(/[^0-9]/g, '');
+        }
+
+        // 📱 VALIDAR TELÉFONO - Solo números y símbolo +
+        function validarTelefono(input) {
+            // Permitir solo números y el símbolo + al inicio
+            let value = input.value;
+
+            // Remover todo excepto números y +
+            value = value.replace(/[^0-9+]/g, '');
+
+            // Asegurar que + solo esté al inicio
+            if (value.includes('+')) {
+                const parts = value.split('+');
+                value = '+' + parts.join('').replace(/\+/g, '');
+            }
+
+            input.value = value;
+        }
+
+        // ✏️ VALIDAR NOMBRE - Solo letras y espacios
+        function validarNombre(input) {
+            // Permitir solo letras, espacios y acentos
+            input.value = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+        }
+
+        // ✅ VERIFICAR SI TODOS LOS CAMPOS ESTÁN COMPLETOS
+        function verificarCamposCliente() {
+            const dni = document.getElementById('clientDNI').value.trim();
+            const nombre = document.getElementById('clientNombre').value.trim();
+            const telefono = document.getElementById('clientTelefono').value.trim();
+            const nombreReadOnly = document.getElementById('clientNombre').readOnly;
+
+            const registerContainer = document.getElementById('registerClientContainer');
+            const registerBtn = document.getElementById('registerClientBtn');
+
+            // Solo mostrar el botón si el cliente NO existe (campos editables)
+            if (!nombreReadOnly && dni && nombre && telefono) {
+                // Validar longitudes mínimas
+                if (dni.length >= 7 && nombre.length >= 3 && telefono.length >= 8) {
+                    registerContainer.style.display = 'block';
+                    registerBtn.disabled = false;
+                    registerBtn.style.opacity = '1';
+                    registerBtn.style.cursor = 'pointer';
+                    console.log('✅ Campos completos - Botón habilitado');
+                } else {
+                    registerBtn.disabled = true;
+                    registerBtn.style.opacity = '0.5';
+                    registerBtn.style.cursor = 'not-allowed';
+                }
+            } else {
+                registerContainer.style.display = 'none';
+                console.log('⚠️ Campos incompletos o cliente ya existe');
+            }
+        }
+
+        // 📝 REGISTRAR CLIENTE
+        async function registrarCliente() {
+            const dni = document.getElementById('clientDNI').value.trim();
+            const nombre = document.getElementById('clientNombre').value.trim();
+            const telefono = document.getElementById('clientTelefono').value.trim();
+
+            if (!dni || !nombre || !telefono) {
+                mostrarMensajeCliente('❌ Complete todos los campos', 'error');
+                return;
+            }
+
+            console.log('📝 Registrando cliente:', {
+                dni,
+                nombre,
+                telefono
+            });
+
+            // Deshabilitar botón durante el registro
+            const registerBtn = document.getElementById('registerClientBtn');
+            registerBtn.disabled = true;
+            registerBtn.style.opacity = '0.6';
+            registerBtn.innerHTML = '⏳ Registrando...';
+
+            mostrarMensajeCliente('Registrando cliente...', 'info');
+
+            try {
+                const response = await fetch('http://localhost:8000/api/caja/registrarcliente/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        dni: dni,
+                        telefono: telefono,
+                        nombre: nombre
+                    })
+                });
+
+                const data = await response.json();
+                console.log('✅ Respuesta del backend:', data);
+
+                if (data.success || response.ok) {
+                    // Registro exitoso
+                    mostrarMensajeCliente('✅ Cliente registrado exitosamente', 'success');
+
+                    // Hacer los campos de solo lectura
+                    document.getElementById('clientNombre').readOnly = true;
+                    document.getElementById('clientTelefono').readOnly = true;
+                    document.getElementById('clientNombre').style.backgroundColor = '#f9fafb';
+                    document.getElementById('clientTelefono').style.backgroundColor = '#f9fafb';
+
+                    // Ocultar botón de registro
+                    document.getElementById('registerClientContainer').style.display = 'none';
+
+                    console.log('✅ Cliente registrado:', {
+                        dni,
+                        nombre,
+                        telefono
+                    });
+                } else {
+                    // Error en el registro
+                    mostrarMensajeCliente('❌ ' + (data.message || 'Error al registrar cliente'), 'error');
+
+                    // Rehabilitar botón
+                    registerBtn.disabled = false;
+                    registerBtn.style.opacity = '1';
+                    registerBtn.innerHTML = '✅ Registrar Cliente';
+                }
+
+            } catch (error) {
+                console.error('❌ Error al registrar cliente:', error);
+                mostrarMensajeCliente('❌ Error al conectar con el servidor', 'error');
+
+                // Rehabilitar botón
+                registerBtn.disabled = false;
+                registerBtn.style.opacity = '1';
+                registerBtn.innerHTML = '✅ Registrar Cliente';
             }
         }
 

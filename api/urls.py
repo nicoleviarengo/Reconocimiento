@@ -15,6 +15,7 @@ urlpatterns = [
     path('caja/resumen/', views.resumen_caja_page, name='resumen_caja'),
     path('caja/procesar-imagen/', views.procesar_imagen_caja, name='procesar_imagen_caja'),
     path('caja/guardar-temporales/', views.guardar_productos_temporales, name='guardar_productos_temporales'),    
+    path('caja/limpiar-sesion/', views.limpiar_sesion_caja, name='limpiar_sesion_caja'),
     path('caja/confirmar/', views.confirmar_orden_caja, name='confirmar_orden_caja'),
     path('caja/compra-confirmada/', views.compra_confirmada_page, name='compra_confirmada'),
     path('caja/registro-cliente/', views.registro_cliente_page, name='registro_cliente'),

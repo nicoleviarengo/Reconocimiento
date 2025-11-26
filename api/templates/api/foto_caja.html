@@ -671,6 +671,28 @@
                 console.log('Response data:', data);
 
                 if (data.success) {
+                    console.log('═'.repeat(80));
+                    console.log('✅ IMAGEN PROCESADA EXITOSAMENTE');
+                    console.log('═'.repeat(80));
+                    console.log(`📦 Productos detectados: ${data.productos?.length || 0}`);
+                    console.log('─'.repeat(80));
+
+                    if (data.productos && data.productos.length > 0) {
+                        data.productos.forEach((producto, index) => {
+                            console.log(`${index + 1}. ${producto.nombre}`);
+                            console.log(`   ID: ${producto.id || '❌ SIN ID'}`);
+                            console.log(`   Cantidad: ${producto.cantidad}`);
+                            console.log(`   Precio Unitario: $${producto.precio_unitario}`);
+                            console.log(`   Subtotal: $${producto.subtotal}`);
+                            console.log('');
+                        });
+                    }
+
+                    console.log('─'.repeat(80));
+                    console.log(`💰 Total: $${data.total}`);
+                    console.log('═'.repeat(80));
+                    console.log('🔄 Redirigiendo a resumen...');
+
                     hideLoading();
                     // Redirigir a resumen con los productos detectados
                     window.location.href = '/api/caja/resumen/';

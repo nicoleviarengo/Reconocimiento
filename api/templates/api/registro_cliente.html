@@ -350,8 +350,11 @@
 
                 <div id="errorMessage" class="error-message"></div>
                 <div id="successMessage" class="success-message"></div>
+                <button type="button" class="primary-btn" onclick="volverInicio()">
+                    Volver al inicio
+                </button>
 
-                <form id="registrationForm">
+                <!---<form id="registrationForm">
                     <div class="form-group">
                         <label class="form-label">DNI Cliente</label>
                         <input type="text" class="form-input" id="dniInput" placeholder="Ingrese DNI" required>
@@ -370,7 +373,7 @@
                             Cancelar
                         </button>
                     </div>
-                </form>
+                </form>-->
             </div>
         </main>
 
@@ -392,7 +395,7 @@
             }, 100);
         });
 
-        function registrarCliente() {
+        /*function registrarCliente() {
             const dni = document.getElementById('dniInput').value.trim();
             const phone = document.getElementById('phoneInput').value.trim();
             const errorMessage = document.getElementById('errorMessage');
@@ -431,7 +434,7 @@
             setTimeout(() => {
                 window.location.href = '/api/home/';
             }, 2000);
-        }
+        }*/
 
         function mostrarError(mensaje) {
             const errorMessage = document.getElementById('errorMessage');
@@ -443,6 +446,46 @@
             const successMessage = document.getElementById('successMessage');
             successMessage.textContent = mensaje;
             successMessage.style.display = 'block';
+        }
+
+        function volverInicio() {
+            console.log('🧹 Limpiando sesión y volviendo al inicio...');
+
+            // Limpiar sesión antes de volver al inicio
+            fetch('{% url "limpiar_sesion_caja" %}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('✅ Sesión limpiada:', data);
+
+                    // Redirigir a foto_caja después de limpiar
+                    window.location.href = '{% url "foto_caja" %}';
+                })
+                .catch(error => {
+                    console.error('❌ Error al limpiar sesión:', error);
+
+                    // Redirigir de todas formas
+                    window.location.href = '{% url "foto_caja" %}';
+                });
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
         }
 
         function goBack() {

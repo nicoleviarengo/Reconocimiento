@@ -89,6 +89,17 @@ def caja_page(request):
 
 def foto_caja_page(request):
     """Renderiza la página para capturar/subir foto en caja"""
+      # Limpiar sesión SOLO si NO viene de "agregar más productos"
+    if not request.GET.get('agregar'):
+        request.session.pop('productos_caja', None)
+        request.session.pop('total_caja', None)
+        print("=" * 80)
+        print("🧹 SESIÓN LIMPIADA - Nueva detección")
+        print("=" * 80)
+    else:
+        print("=" * 80)
+        print("➕ Modo AGREGAR MÁS - Manteniendo productos anteriores")
+        print("=" * 80)
     return render(request, 'api/foto_caja.html')
 
 
@@ -267,6 +278,42 @@ def historial_deposito_page(request):
     return render(request, 'api/historial_deposito.html', context)
 
 @csrf_exempt
+def limpiar_sesion_caja(request):
+    """
+    Limpia todos los datos de sesión relacionados con la caja
+    """
+    if request.method == 'POST':
+        try:
+            # Limpiar todos los datos de la sesión de caja
+            request.session.pop('productos_caja', None)
+            request.session.pop('total_caja', None)
+            request.session.pop('imagen_caja', None)
+            request.session.pop('clientDNI', None)
+            request.session.pop('clientNombre', None)
+            request.session.pop('clientTelefono', None)
+            
+            print("=" * 80)
+            print("🧹 SESIÓN LIMPIADA COMPLETAMENTE")
+            print("=" * 80)
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Sesión limpiada correctamente'
+            })
+            
+        except Exception as e:
+            print(f"❌ ERROR al limpiar sesión: {e}")
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=500)
+    
+    return JsonResponse({
+        'success': False,
+        'error': 'Método no permitido'
+    }, status=405)
+
+@csrf_exempt
 def confirmar_orden_caja(request):
     """
     API para confirmar la orden de caja
@@ -304,10 +351,6 @@ def confirmar_orden_caja(request):
             )
             
             if response.status_code == 200:
-                # Limpiar sesión
-                request.session.pop('productos_caja', None)
-                request.session.pop('imagen_caja', None)
-                
                 backend_response = response.json()
                 return JsonResponse({
                     'success': True,
