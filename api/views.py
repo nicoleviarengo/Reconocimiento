@@ -197,7 +197,7 @@ def procesar_imagen_caja(request):
             else:
                 return JsonResponse({
                     'success': False,
-                    'error': 'Error al procesar la imagen en el servidor'
+                    'error': 'Error, no se han identificado productos en la imagen'
                 }, status=500)
             
         except requests.exceptions.RequestException as e:
@@ -393,20 +393,31 @@ def deposito_page(request):
 
 
 def foto_deposito_page(request):
-    return render(request, 'api/foto_deposito.html')
+    # Obtener depósitos seleccionados desde la sesión
+    deposito_origen = request.session.get('deposito_origen', {'id': 1, 'nombre': 'Deposito 1'})
+    deposito_destino = request.session.get('deposito_destino', {'id': 2, 'nombre': 'Deposito 2'})
+    
+    context = {
+        'deposito_origen': deposito_origen,
+        'deposito_destino': deposito_destino
+    }
+    return render(request, 'api/foto_deposito.html', context)
 
 
 def resumen_deposito_page(request):
     # Obtener productos desde la sesión si existen
-    productos = request.session.get('productos_deposito', [
-        {'id': 1, 'cantidad': 12, 'nombre': 'Item 1'},
-        {'id': 2, 'cantidad': 25, 'nombre': 'Item 2'},
-        {'id': 3, 'cantidad': 33, 'nombre': 'Item 3'},
-        {'id': 4, 'cantidad': 9, 'nombre': 'Item 4'},
-    ])
+    productos = request.session.get('productos_deposito', [])
+    
+    # Obtener depósitos seleccionados (ahora son objetos con id y nombre)
+    deposito_origen = request.session.get('deposito_origen', {'id': 1, 'nombre': 'Deposito 1'})
+    deposito_destino = request.session.get('deposito_destino', {'id': 2, 'nombre': 'Deposito 2'})
     
     context = {
-        'productos': productos
+        'productos': productos,
+        'deposito_origen': deposito_origen,
+        'deposito_destino': deposito_destino,
+        'deposito_origen_json': json.dumps(deposito_origen),
+        'deposito_destino_json': json.dumps(deposito_destino)
     }
     return render(request, 'api/resumen_deposito.html', context)
 
@@ -414,81 +425,231 @@ def deposito_confirmada_page(request):
     return render(request, 'api/deposito_confirmada.html')
 
 @csrf_exempt
-def procesar_imagen_deposito(request):
+def guardar_seleccion_depositos(request):
     """
-    API para procesar la imagen de depósito y detectar productos
-    Recibe una imagen en base64 y retorna los productos detectados
+    Guarda la selección de depósito origen y destino en la sesión
+    Ahora recibe objetos con {id, nombre}
     """
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            imagen_base64 = data.get('imagen')
+            deposito_origen = data.get('depositoOrigen')
+            deposito_destino = data.get('depositoDestino')
             
-            if not imagen_base64:
+            if not deposito_origen or not deposito_destino:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Faltan datos de depósito origen o destino'
+                }, status=400)
+            
+            # Validar que sean objetos con id y nombre
+            if not isinstance(deposito_origen, dict) or not isinstance(deposito_destino, dict):
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Los depósitos deben ser objetos con id y nombre'
+                }, status=400)
+            
+            if 'id' not in deposito_origen or 'nombre' not in deposito_origen:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'El depósito origen debe tener id y nombre'
+                }, status=400)
+                
+            if 'id' not in deposito_destino or 'nombre' not in deposito_destino:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'El depósito destino debe tener id y nombre'
+                }, status=400)
+            
+            # Guardar en sesión como objetos completos
+            request.session['deposito_origen'] = deposito_origen
+            request.session['deposito_destino'] = deposito_destino
+            
+            print("=" * 80)
+            print("🏢 DEPÓSITOS SELECCIONADOS:")
+            print(f"   Origen: {deposito_origen['nombre']} (ID: {deposito_origen['id']})")
+            print(f"   Destino: {deposito_destino['nombre']} (ID: {deposito_destino['id']})")
+            print("=" * 80)
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Selección guardada correctamente'
+            })
+            
+        except Exception as e:
+            print(f"❌ ERROR al guardar selección de depósitos: {e}")
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=500)
+    
+    return JsonResponse({
+        'success': False,
+        'error': 'Método no permitido'
+    }, status=405)
+
+@csrf_exempt
+def limpiar_sesion_deposito(request):
+    """
+    Limpia todos los datos de sesión relacionados con el depósito
+    """
+    if request.method == 'POST':
+        try:
+            # Limpiar todos los datos de la sesión de depósito
+            request.session.pop('productos_deposito', None)
+            request.session.pop('total_deposito', None)
+            request.session.pop('imagen_deposito', None)
+            request.session.pop('deposito_origen', None)
+            request.session.pop('deposito_destino', None)
+            
+            print("=" * 80)
+            print("🧹 DEPÓSITO - SESIÓN LIMPIADA COMPLETAMENTE")
+            print("=" * 80)
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Sesión de depósito limpiada correctamente'
+            })
+            
+        except Exception as e:
+            print(f"❌ ERROR al limpiar sesión de depósito: {e}")
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=500)
+    
+    return JsonResponse({
+        'success': False,
+        'error': 'Método no permitido'
+    }, status=405)
+
+@csrf_exempt
+def guardar_productos_temporales_deposito(request):
+    """
+    Guarda los productos actuales de depósito antes de tomar otra foto
+    Permite acumular productos en múltiples capturas
+    """
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            productos = data.get('productos', [])
+            
+            # Guardar en sesión
+            request.session['productos_deposito'] = productos
+            
+            # Calcular total de cantidades
+            total_cantidad = sum(p.get('cantidad', 0) for p in productos)
+            request.session['total_deposito'] = total_cantidad
+            
+            print("=" * 80)
+            print("💾 DEPÓSITO - PRODUCTOS GUARDADOS TEMPORALMENTE:")
+            print(f"Cantidad de productos: {len(productos)}")
+            print(f"Total cantidad: {total_cantidad}")
+            for p in productos:
+                print(f"  - {p.get('nombre')}: {p.get('cantidad')} unidades")
+            print("=" * 80)
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Productos guardados'
+            })
+            
+        except Exception as e:
+            print(f"❌ ERROR al guardar productos de depósito: {e}")
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=500)
+    
+    return JsonResponse({
+        'success': False,
+        'error': 'Método no permitido'
+    }, status=405)
+
+@csrf_exempt
+def procesar_imagen_deposito(request):
+    """
+    API para procesar la imagen de depósito y detectar productos
+    Recibe una imagen como archivo multipart/form-data y retorna los productos detectados
+    NO acumula productos (a diferencia de caja)
+    """
+    if request.method == 'POST':
+        try:
+            imagen_file = request.FILES.get('image')
+            
+            if not imagen_file:
                 return JsonResponse({
                     'success': False,
                     'error': 'No se proporcionó ninguna imagen'
                 }, status=400)
             
-            # Decodificar la imagen base64
-            import base64
-            from io import BytesIO
+            print("=" * 80)
+            print("📸 DEPÓSITO - Procesando imagen")
+            print(f"Nombre del archivo: {imagen_file.name}")
+            print(f"Content-Type: {imagen_file.content_type}")
+            print(f"Tamaño: {imagen_file.size} bytes")
             
-            # Remover el prefijo 'data:image/jpeg;base64,' si existe
-            if ',' in imagen_base64:
-                imagen_base64 = imagen_base64.split(',')[1]
+            # URL del backend FastAPI
+            BACKEND_URL = getattr(settings, 'BACKEND_URL', 'http://localhost:8000')
             
-            imagen_bytes = base64.b64decode(imagen_base64)
+            # Preparar la imagen para el backend
+            files = {
+                'image': (imagen_file.name, imagen_file.read(), imagen_file.content_type)
+            }
             
-            # URL del microservicio (ajusta según tu configuración)
-            MICROSERVICIO_URL = getattr(settings, 'MICROSERVICIO_URL', 'http://localhost:5000')
-            
-            # Enviar la imagen al microservicio
-            files = {'image': ('image.jpg', BytesIO(imagen_bytes), 'image/jpeg')}
+            # Enviar al backend FastAPI
+            print(f"🚀 Enviando imagen al backend: {BACKEND_URL}/api/caja/detectarobjetos/")
             response = requests.post(
-                f'{MICROSERVICIO_URL}/predict',
+                f'{BACKEND_URL}/api/caja/detectarobjetos/',
                 files=files,
-                data={'conf_threshold': 0.25},
                 timeout=30
             )
+            
+            print(f"📥 Respuesta del backend: Status {response.status_code}")
             
             if response.status_code != 200:
                 return JsonResponse({
                     'success': False,
-                    'error': 'Error al procesar la imagen en el microservicio'
+                    'error': 'Error al procesar la imagen en el backend'
                 }, status=500)
             
-            resultado = response.json()
-            productos_detectados = []
+            response_json = response.json()
+            productos_nuevos = response_json.get('productos', [])
             
-            # Convertir el formato del microservicio al formato esperado por el frontend
-            for idx, obj in enumerate(resultado.get('objects', []), start=1):
-                productos_detectados.append({
-                    'id': idx,
-                    'cantidad': obj['cantidad'],
-                    'nombre': obj['nombre']
-                })
+            print(f"✅ Productos detectados en imagen: {len(productos_nuevos)}")
             
-            # Guardar productos en la sesión
-            request.session['productos_deposito'] = productos_detectados
-            request.session['imagen_deposito'] = imagen_base64
+            # ✅ ACUMULAR productos si hay productos anteriores en la sesión
+            productos_anteriores = request.session.get('productos_deposito', [])
+            print(f"📦 Productos anteriores en sesión: {len(productos_anteriores)}")
+            
+            # Combinar productos (acumulación)
+            productos_acumulados = productos_anteriores + productos_nuevos
+            
+            # Guardar productos acumulados en sesión
+            request.session['productos_deposito'] = productos_acumulados
+            
+            # Calcular total de cantidades (no precio en depósito)
+            total_cantidad = sum(p.get('cantidad', 0) for p in productos_acumulados)
+            request.session['total_deposito'] = total_cantidad
+            
+            print(f"💾 Total productos en sesión: {len(productos_acumulados)} (anteriores: {len(productos_anteriores)} + nuevos: {len(productos_nuevos)})")
+            print(f"📊 Total cantidad: {total_cantidad}")
+            print("=" * 80)
             
             return JsonResponse({
                 'success': True,
-                'productos': productos_detectados
+                'productos': productos_acumulados,
+                'total_cantidad': total_cantidad
             })
             
         except requests.exceptions.RequestException as e:
+            print(f"❌ Error de conexión con backend: {str(e)}")
             return JsonResponse({
                 'success': False,
-                'error': f'Error al conectar con el microservicio: {str(e)}'
+                'error': f'Error al conectar con el backend: {str(e)}'
             }, status=500)
-        except json.JSONDecodeError:
-            return JsonResponse({
-                'success': False,
-                'error': 'Error al procesar los datos'
-            }, status=400)
         except Exception as e:
+            print(f"❌ Error inesperado: {str(e)}")
             return JsonResponse({
                 'success': False,
                 'error': f'Error inesperado: {str(e)}'

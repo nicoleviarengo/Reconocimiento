@@ -22,7 +22,11 @@ urlpatterns = [
     
     # === DEPÓSITO ===
     path('deposito/', views.deposito_page, name='deposito'),
+    path('deposito/guardar-seleccion/', views.guardar_seleccion_depositos, name='guardar_seleccion_depositos'),
     path('deposito/foto/', views.foto_deposito_page, name='foto_deposito'),
+    path('deposito/procesar-imagen/', views.procesar_imagen_deposito, name='procesar_imagen_deposito'),
+    path('deposito/guardar-temporales/', views.guardar_productos_temporales_deposito, name='guardar_productos_temporales_deposito'),
+    path('deposito/limpiar-sesion/', views.limpiar_sesion_deposito, name='limpiar_sesion_deposito'),
     path('deposito/resumen/', views.resumen_deposito_page, name='resumen_deposito'),
     path('deposito/confirmada/', views.deposito_confirmada_page, name='deposito_confirmada'),
     path('deposito/historial/', views.historial_deposito_page, name='historial_deposito'),

@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -100,6 +101,14 @@
 
         .page-header {
             margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+        }
+
+        .page-header-content {
+            flex: 1;
         }
 
         .page-title {
@@ -110,6 +119,37 @@
             display: flex;
             align-items: center;
             gap: 16px;
+        }
+
+        .btn-nueva-transferencia {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+            white-space: nowrap;
+        }
+
+        .btn-nueva-transferencia:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-nueva-transferencia svg {
+            transition: transform 0.3s;
+        }
+
+        .btn-nueva-transferencia:hover svg {
+            transform: rotate(90deg);
         }
 
         .title-icon {
@@ -197,6 +237,244 @@
             font-size: 14px;
         }
 
+        .estado-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .estado-pendiente {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+        }
+
+        .estado-confirmada {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-details {
+            background: rgba(163, 99, 241, 0.1);
+            color: #7e56eb;
+        }
+
+        .btn-details:hover {
+            background: rgba(163, 99, 241, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .btn-confirm {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+        }
+
+        .btn-confirm:hover {
+            background: rgba(34, 197, 94, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .btn-confirm:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f3f4f6;
+        }
+
+        .modal-header h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            padding: 8px;
+            border-radius: 8px;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .close-modal:hover {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .modal-info {
+            background: #f9fafb;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+
+        .modal-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .modal-info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal-info-label {
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .modal-info-value {
+            color: #111827;
+            font-weight: 600;
+        }
+
+        .productos-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .producto-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .producto-info {
+            flex: 1;
+        }
+
+        .producto-nombre {
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .producto-id {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .producto-cantidad {
+            font-weight: 700;
+            color: #d97706;
+            font-size: 18px;
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #a363f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
         .empty-state {
             text-align: center;
             padding: 80px 20px;
@@ -248,30 +526,102 @@
             box-shadow: 0 8px 20px rgba(163, 99, 241, 0.4);
         }
 
+        .filters-section {
+            background: #f9fafb;
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-select {
+            padding: 10px 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #111827;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #a363f1;
+            box-shadow: 0 0 0 3px rgba(163, 99, 241, 0.1);
+        }
+
+        .filter-select:hover {
+            border-color: #d1d5db;
+        }
+
+        .btn-clear-filters {
+            padding: 10px 20px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            align-self: flex-end;
+        }
+
+        .btn-clear-filters:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+            color: #374151;
+        }
+
         .summary-section {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 24px;
-            margin-bottom: 32px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
         }
 
         .summary-card {
             background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
-            padding: 24px;
-            border-radius: 16px;
+            padding: 16px;
+            border-radius: 12px;
             border: 1px solid #e5e7eb;
         }
 
         .summary-label {
-            font-size: 14px;
+            font-size: 11px;
             color: #6b7280;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .summary-value {
-            font-size: 32px;
+            font-size: 24px;
             font-weight: 700;
             color: #111827;
         }
@@ -305,7 +655,8 @@
                 padding: 20px;
             }
 
-            th, td {
+            th,
+            td {
                 padding: 12px 8px;
                 font-size: 14px;
             }
@@ -338,6 +689,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header class="header">
@@ -345,20 +697,26 @@
                 <div class="brand-dot"></div>
                 <span>Reconocimiento 2025</span>
             </div>
-            
+
             <div class="user-info">
                 <div class="user-avatar">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" fill="#a363f1"/>
-                        <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="#a363f1"/>
+                        <path
+                            d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z"
+                            fill="#a363f1" />
+                        <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="#a363f1" />
                     </svg>
                 </div>
                 <span class="user-name">Usuario</span>
                 <button class="logout-btn" onclick="logout()">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path
+                            d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
                     </svg>
                 </button>
             </div>
@@ -366,28 +724,83 @@
 
         <main class="main-content">
             <div class="page-header">
-                <h1 class="page-title">
-                    <div class="title-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <path d="M3 8L12 3L21 8V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V8Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M9 21V12H15V21" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    Historial de Depósito
-                </h1>
-                <p class="page-subtitle">Productos confirmados en el depósito</p>
+                <div class="page-header-content">
+                    <h1 class="page-title">
+                        <div class="title-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M3 8L12 3L21 8V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V8Z"
+                                    stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M9 21V12H15V21" stroke="white" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                        Historial de Transferencias
+                    </h1>
+                    <p class="page-subtitle">Transferencias realizadas entre depósitos</p>
+                </div>
+                <button class="btn-nueva-transferencia" onclick="nuevaTransferencia()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    Nueva Transferencia
+                </button>
             </div>
 
             <div class="content-card">
-                {% if productos %}
-                    <div class="summary-section">
+                <div id="loadingState" class="loading-spinner">
+                    <div class="spinner"></div>
+                </div>
+
+                <div id="contentState" style="display: none;">
+                    <!-- Filtros -->
+                    <div class="filters-section">
+                        <div class="filters-grid">
+                            <div class="filter-group">
+                                <label class="filter-label">Depósito Origen</label>
+                                <select class="filter-select" id="filterOrigen" onchange="applyFilters()">
+                                    <option value="">Todos</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Depósito Destino</label>
+                                <select class="filter-select" id="filterDestino" onchange="applyFilters()">
+                                    <option value="">Todos</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Estado</label>
+                                <select class="filter-select" id="filterEstado" onchange="applyFilters()">
+                                    <option value="">Todos</option>
+                                    <option value="pendiente">Pendiente</option>
+                                    <option value="confirmada">Confirmada</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label" style="opacity: 0;">Limpiar</label>
+                                <button class="btn-clear-filters" onclick="clearFilters()">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                    Limpiar Filtros
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="summary-section" id="summarySection">
                         <div class="summary-card">
-                            <div class="summary-label">Total Productos</div>
-                            <div class="summary-value">{{ productos|length }}</div>
+                            <div class="summary-label">Total Transferencias</div>
+                            <div class="summary-value" id="totalTransferencias">0</div>
                         </div>
                         <div class="summary-card">
-                            <div class="summary-label">Cantidad Total</div>
-                            <div class="summary-value">{{ total_cantidad }}</div>
+                            <div class="summary-label">Pendientes</div>
+                            <div class="summary-value" id="totalPendientes">0</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Confirmadas</div>
+                            <div class="summary-value" id="totalConfirmadas">0</div>
                         </div>
                     </div>
 
@@ -396,48 +809,57 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Producto</th>
-                                    <th>Cantidad</th>
                                     <th>Fecha</th>
+                                    <th>Origen</th>
+                                    <th>Destino</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {% for producto in productos %}
-                                <tr>
-                                    <td>#{{ producto.id }}</td>
-                                    <td>
-                                        <div class="product-name">{{ producto.nombre }}</div>
-                                        <div class="product-id">SKU: PROD-{{ producto.id|stringformat:"03d" }}</div>
-                                    </td>
-                                    <td>
-                                        <span class="quantity-badge">{{ producto.cantidad }} unidades</span>
-                                    </td>
-                                    <td>{{ producto.fecha|default:"Hoy" }}</td>
-                                </tr>
-                                {% endfor %}
+                            <tbody id="transferenciasBody">
+                                <!-- Se llenará dinámicamente con JavaScript -->
                             </tbody>
                         </table>
                     </div>
-                {% else %}
-                    <div class="empty-state">
-                        <div class="empty-icon">
-                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none">
-                                <path d="M3 8L12 3L21 8V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V8Z" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M9 21V12H15V21" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        <h2 class="empty-title">No hay productos registrados</h2>
-                        <p class="empty-text">
-                            Aún no se han confirmado productos en el depósito.<br>
-                            Realiza una transferencia para ver el historial aquí.
-                        </p>
+                </div>
+
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <div class="empty-icon">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none">
+                            <path d="M3 8L12 3L21 8V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V8Z"
+                                stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M9 21V12H15V21" stroke="#9ca3af" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
                     </div>
-                {% endif %}
+                    <h2 class="empty-title">No hay transferencias registradas</h2>
+                    <p class="empty-text">
+                        Aún no se han realizado transferencias entre depósitos.<br>
+                        Realiza una transferencia para ver el historial aquí.
+                    </p>
+                </div>
+
+                <div id="noResultsState" class="empty-state" style="display: none;">
+                    <div class="empty-icon">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none">
+                            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="#9ca3af" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <h2 class="empty-title">No se encontraron transferencias</h2>
+                    <p class="empty-text">
+                        No hay transferencias que coincidan con los filtros aplicados.<br>
+                        Intenta ajustar los criterios de búsqueda.
+                    </p>
+                </div>
 
                 <button class="btn-home" onclick="goToHome()">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M9 22V12H15V22" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path
+                            d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z"
+                            stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M9 22V12H15V22" stroke="white" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
                     </svg>
                     Volver al Inicio
                 </button>
@@ -449,18 +871,442 @@
         </footer>
     </div>
 
+    <!-- MODAL PARA DETALLES DE PRODUCTOS -->
+    <div class="modal-overlay" id="detailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Detalle de Transferencia</h3>
+                <button class="close-modal" onclick="closeDetailsModal()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-info" id="modalInfo">
+                <!-- Se llenará dinámicamente -->
+            </div>
+
+            <h4 style="margin-bottom: 16px; font-weight: 600; color: #111827;">Productos</h4>
+            <div class="productos-list" id="productsList">
+                <!-- Se llenará dinámicamente -->
+            </div>
+        </div>
+    </div>
+
     <script>
-        window.addEventListener('DOMContentLoaded', function() {
+        let transferenciasData = [];
+        let transferenciasFiltered = [];
+
+        // Catálogo de depósitos
+        const DEPOSITOS = [{
+                id: 1,
+                nombre: "Deposito 1"
+            },
+            {
+                id: 2,
+                nombre: "Deposito 2"
+            },
+            {
+                id: 3,
+                nombre: "Deposito 3"
+            },
+            {
+                id: 4,
+                nombre: "Deposito 4"
+            }
+        ];
+
+        window.addEventListener('DOMContentLoaded', function () {
             const card = document.querySelector('.content-card');
             card.style.opacity = '0';
             card.style.transform = 'translateY(20px)';
-            
+
             setTimeout(() => {
                 card.style.transition = 'all 0.6s ease';
                 card.style.opacity = '1';
                 card.style.transform = 'translateY(0)';
             }, 100);
+
+            // Cargar transferencias al iniciar
+            loadTransferencias();
         });
+
+        async function loadTransferencias() {
+            const loadingState = document.getElementById('loadingState');
+            const contentState = document.getElementById('contentState');
+            const emptyState = document.getElementById('emptyState');
+
+            try {
+                console.log('🔄 Cargando transferencias...');
+
+                const response = await fetch('http://localhost:8000/api/deposito/listarTransferencia/', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+
+                console.log('📥 Respuesta del backend:', data);
+
+                loadingState.style.display = 'none';
+
+                if (data.success && data.transferencias && data.transferencias.length > 0) {
+                    transferenciasData = data.transferencias;
+                    transferenciasFiltered = data.transferencias;
+                    populateFilters();
+                    renderTransferencias(transferenciasFiltered);
+                    contentState.style.display = 'block';
+                    emptyState.style.display = 'none';
+                } else {
+                    contentState.style.display = 'none';
+                    emptyState.style.display = 'block';
+                }
+
+            } catch (error) {
+                console.error('❌ Error al cargar transferencias:', error);
+                loadingState.style.display = 'none';
+                emptyState.style.display = 'block';
+                alert('Error al conectar con el servidor. Por favor intenta de nuevo.');
+            }
+        }
+
+        function renderTransferencias(transferencias) {
+            const tbody = document.getElementById('transferenciasBody');
+            tbody.innerHTML = '';
+
+            let totalPendientes = 0;
+            let totalConfirmadas = 0;
+
+            transferencias.forEach(transferencia => {
+                if (transferencia.estado === 'pendiente') {
+                    totalPendientes++;
+                } else if (transferencia.estado === 'confirmada') {
+                    totalConfirmadas++;
+                }
+
+                const row = document.createElement('tr');
+
+                // Formatear fecha
+                const fecha = new Date(transferencia.fecha);
+                const fechaFormateada = fecha.toLocaleString('es-AR', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const estadoClass = transferencia.estado === 'pendiente' ? 'estado-pendiente' :
+                    'estado-confirmada';
+                const estadoTexto = transferencia.estado === 'pendiente' ? 'Pendiente' : 'Confirmada';
+
+                const confirmBtnDisabled = transferencia.estado === 'confirmada' ? 'disabled' : '';
+
+                row.innerHTML = `
+                    <td><strong>#${transferencia.id}</strong></td>
+                    <td>${fechaFormateada}</td>
+                    <td>
+                        <div class="product-name">${transferencia.deposito_origen.nombre}</div>
+                        <div class="product-id">ID: ${transferencia.deposito_origen.id}</div>
+                    </td>
+                    <td>
+                        <div class="product-name">${transferencia.deposito_destino.nombre}</div>
+                        <div class="product-id">ID: ${transferencia.deposito_destino.id}</div>
+                    </td>
+                    <td>
+                        <span class="estado-badge ${estadoClass}">${estadoTexto}</span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-action btn-details" onclick="showDetails(${transferencia.id})">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Detalles
+                            </button>
+                            <button class="btn-action btn-confirm" onclick="confirmTransferencia(${transferencia.id})" ${confirmBtnDisabled}>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                    <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                Confirmar
+                            </button>
+                        </div>
+                    </td>
+                `;
+
+                tbody.appendChild(row);
+            });
+
+            // Actualizar resumen
+            document.getElementById('totalTransferencias').textContent = transferencias.length;
+            document.getElementById('totalPendientes').textContent = totalPendientes;
+            document.getElementById('totalConfirmadas').textContent = totalConfirmadas;
+        }
+
+        function showDetails(transferenciaId) {
+            const transferencia = transferenciasData.find(t => t.id === transferenciaId);
+
+            if (!transferencia) {
+                alert('No se encontró la transferencia');
+                return;
+            }
+
+            const modal = document.getElementById('detailsModal');
+            const modalInfo = document.getElementById('modalInfo');
+            const productsList = document.getElementById('productsList');
+
+            // Formatear fecha
+            const fecha = new Date(transferencia.fecha);
+            const fechaFormateada = fecha.toLocaleString('es-AR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            const estadoTexto = transferencia.estado === 'pendiente' ? 'Pendiente' : 'Confirmada';
+            const estadoClass = transferencia.estado === 'pendiente' ? 'estado-pendiente' : 'estado-confirmada';
+
+            // Llenar información general
+            modalInfo.innerHTML = `
+                <div class="modal-info-row">
+                    <span class="modal-info-label">ID Transferencia:</span>
+                    <span class="modal-info-value">#${transferencia.id}</span>
+                </div>
+                <div class="modal-info-row">
+                    <span class="modal-info-label">Fecha:</span>
+                    <span class="modal-info-value">${fechaFormateada}</span>
+                </div>
+                <div class="modal-info-row">
+                    <span class="modal-info-label">Origen:</span>
+                    <span class="modal-info-value">${transferencia.deposito_origen.nombre}</span>
+                </div>
+                <div class="modal-info-row">
+                    <span class="modal-info-label">Destino:</span>
+                    <span class="modal-info-value">${transferencia.deposito_destino.nombre}</span>
+                </div>
+                <div class="modal-info-row">
+                    <span class="modal-info-label">Estado:</span>
+                    <span class="estado-badge ${estadoClass}">${estadoTexto}</span>
+                </div>
+            `;
+
+            // Llenar lista de productos
+            productsList.innerHTML = '';
+            transferencia.detalles.forEach(detalle => {
+                const productoItem = document.createElement('div');
+                productoItem.className = 'producto-item';
+                productoItem.innerHTML = `
+                    <div class="producto-info">
+                        <div class="producto-nombre">${detalle.producto_nombre}</div>
+                        <div class="producto-id">ID: ${detalle.producto_id} </div>
+                    </div>
+                    <div class="producto-cantidad">${detalle.cantidad} un.</div>
+                `;
+                productsList.appendChild(productoItem);
+            });
+
+            modal.classList.add('active');
+        }
+
+        function populateFilters() {
+            const filterOrigen = document.getElementById('filterOrigen');
+            const filterDestino = document.getElementById('filterDestino');
+
+            // Obtener depósitos únicos de las transferencias
+            const depositosOrigen = new Set();
+            const depositosDestino = new Set();
+
+            transferenciasData.forEach(t => {
+                depositosOrigen.add(JSON.stringify(t.deposito_origen));
+                depositosDestino.add(JSON.stringify(t.deposito_destino));
+            });
+
+            // Poblar filtro de origen
+            Array.from(depositosOrigen).forEach(depStr => {
+                const dep = JSON.parse(depStr);
+                const option = document.createElement('option');
+                option.value = dep.id;
+                option.textContent = dep.nombre;
+                filterOrigen.appendChild(option);
+            });
+
+            // Poblar filtro de destino
+            Array.from(depositosDestino).forEach(depStr => {
+                const dep = JSON.parse(depStr);
+                const option = document.createElement('option');
+                option.value = dep.id;
+                option.textContent = dep.nombre;
+                filterDestino.appendChild(option);
+            });
+        }
+
+        function applyFilters() {
+            const filterOrigen = document.getElementById('filterOrigen').value;
+            const filterDestino = document.getElementById('filterDestino').value;
+            const filterEstado = document.getElementById('filterEstado').value;
+
+            console.log('🔍 Aplicando filtros:', {
+                origen: filterOrigen,
+                destino: filterDestino,
+                estado: filterEstado
+            });
+
+            transferenciasFiltered = transferenciasData.filter(t => {
+                const matchOrigen = !filterOrigen || t.deposito_origen.id == filterOrigen;
+                const matchDestino = !filterDestino || t.deposito_destino.id == filterDestino;
+                const matchEstado = !filterEstado || t.estado === filterEstado;
+
+                return matchOrigen && matchDestino && matchEstado;
+            });
+
+            console.log(
+                `📊 Transferencias filtradas: ${transferenciasFiltered.length} de ${transferenciasData.length}`);
+
+            const contentState = document.getElementById('contentState');
+            const emptyState = document.getElementById('emptyState');
+            const noResultsState = document.getElementById('noResultsState');
+            const summarySection = document.getElementById('summarySection');
+            const tableContainer = document.querySelector('.table-container');
+
+            if (transferenciasFiltered.length > 0) {
+                // Hay resultados: mostrar tabla y resumen
+                renderTransferencias(transferenciasFiltered);
+                summarySection.style.display = 'grid';
+                tableContainer.style.display = 'block';
+                noResultsState.style.display = 'none';
+                emptyState.style.display = 'none';
+            } else {
+                // No hay resultados: mostrar mensaje de no resultados
+                summarySection.style.display = 'none';
+                tableContainer.style.display = 'none';
+                noResultsState.style.display = 'block';
+                emptyState.style.display = 'none';
+            }
+        }
+
+        function clearFilters() {
+            document.getElementById('filterOrigen').value = '';
+            document.getElementById('filterDestino').value = '';
+            document.getElementById('filterEstado').value = '';
+
+            transferenciasFiltered = transferenciasData;
+            renderTransferencias(transferenciasFiltered);
+
+            const summarySection = document.getElementById('summarySection');
+            const tableContainer = document.querySelector('.table-container');
+            const noResultsState = document.getElementById('noResultsState');
+            const emptyState = document.getElementById('emptyState');
+
+            summarySection.style.display = 'grid';
+            tableContainer.style.display = 'block';
+            noResultsState.style.display = 'none';
+            emptyState.style.display = 'none';
+
+            console.log('🧹 Filtros limpiados');
+        }
+
+        function closeDetailsModal() {
+            document.getElementById('detailsModal').classList.remove('active');
+        }
+
+        async function confirmTransferencia(transferenciaId) {
+            const transferencia = transferenciasData.find(t => t.id === transferenciaId);
+
+            if (!transferencia) {
+                alert('No se encontró la transferencia');
+                return;
+            }
+
+            if (transferencia.estado === 'confirmada') {
+                alert('Esta transferencia ya está confirmada');
+                return;
+            }
+
+            // Mostrar confirmación
+            const totalProductos = transferencia.detalles.length;
+            const mensaje = `¿Está seguro que desea confirmar la transferencia #${transferenciaId}?\n\n` +
+                `Origen: ${transferencia.deposito_origen.nombre}\n` +
+                `Destino: ${transferencia.deposito_destino.nombre}\n` +
+                `Productos: ${totalProductos}\n\n` +
+                `Esta acción no se puede deshacer.`;
+
+            if (!confirm(mensaje)) {
+                console.log('❌ Confirmación cancelada por el usuario');
+                return;
+            }
+
+            // Preparar datos para enviar
+            const confirmData = {
+                transferencia_id: transferenciaId,
+                detalles: transferencia.detalles.map(detalle => ({
+                    detalle_id: detalle.detalle_id,
+                    producto_id: detalle.producto_id,
+                    cantidad: detalle.cantidad
+                }))
+            };
+
+            console.log('🔄 Confirmando transferencia:', confirmData);
+
+            try {
+                const response = await fetch('http://localhost:8000/api/deposito/confirmarTransferencia/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(confirmData)
+                });
+
+                const data = await response.json();
+
+                console.log('� Respuesta del backend:', data);
+
+                if (data.success) {
+                    console.log('✅ Transferencia confirmada exitosamente');
+                    console.log('  - Transferencia ID:', data.transferencia_id);
+                    console.log('  - Productos aplicados:', data.applied);
+
+                    // Actualizar estado en los datos locales
+                    const index = transferenciasData.findIndex(t => t.id === transferenciaId);
+                    if (index !== -1) {
+                        transferenciasData[index].estado = 'confirmada';
+                    }
+
+                    const filteredIndex = transferenciasFiltered.findIndex(t => t.id === transferenciaId);
+                    if (filteredIndex !== -1) {
+                        transferenciasFiltered[filteredIndex].estado = 'confirmada';
+                    }
+
+                    // Re-renderizar la tabla con el estado actualizado
+                    renderTransferencias(transferenciasFiltered);
+
+                    // Mostrar mensaje de éxito
+                    alert(`✅ Transferencia #${transferenciaId} confirmada exitosamente\n\n${data.message}`);
+
+                } else {
+                    // Error del backend
+                    console.error('❌ Error al confirmar:', data.message || data.error);
+                    alert(
+                        `❌ Error al confirmar la transferencia\n\n${data.message || data.error || 'Error desconocido'}`
+                        );
+                }
+
+            } catch (error) {
+                console.error('❌ Error de conexión:', error);
+                alert(
+                    '❌ Error al conectar con el servidor\n\nPor favor verifica tu conexión e intenta nuevamente.'
+                    );
+            }
+        }
+
+        function nuevaTransferencia() {
+            window.location.href = '/api/deposito/';
+        }
 
         function goToHome() {
             window.location.href = '/api/home/';
@@ -471,6 +1317,14 @@
                 window.location.href = '/api/login/';
             }
         }
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('detailsModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeDetailsModal();
+            }
+        });
     </script>
 </body>
+
 </html>

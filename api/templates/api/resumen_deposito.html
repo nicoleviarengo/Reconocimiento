@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -256,11 +257,20 @@
             letter-spacing: 0.5px;
         }
 
+        .products-table th:last-child {
+            text-align: center;
+            width: 80px;
+        }
+
         .products-table td {
             padding: 16px;
             border-bottom: 1px solid #f3f4f6;
             color: #374151;
             font-size: 15px;
+        }
+
+        .products-table td:last-child {
+            text-align: center;
         }
 
         .products-table tbody tr {
@@ -272,7 +282,7 @@
         }
 
         .qty-input {
-            width: 80px;
+            width: 60px;
             padding: 8px 12px;
             border: 2px solid #e5e7eb;
             border-radius: 8px;
@@ -285,6 +295,21 @@
         .qty-input:focus {
             outline: none;
             border-color: #f59e0b;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
         }
 
         .primary-btn {
@@ -313,6 +338,229 @@
         .primary-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
+        }
+
+        .add-manual-btn {
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .add-manual-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f3f4f6;
+        }
+
+        .modal-header h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            padding: 8px;
+            border-radius: 8px;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .close-modal:hover {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .product-catalog {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .catalog-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .catalog-item:hover {
+            border-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .catalog-item.selected {
+            border-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .catalog-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .catalog-item-name {
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .catalog-item-radio {
+            width: 20px;
+            height: 20px;
+            accent-color: #f59e0b;
+        }
+
+        .quantity-input-group {
+            margin-bottom: 24px;
+        }
+
+        .quantity-input-group label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .quantity-input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .quantity-input-group input:focus {
+            outline: none;
+            border-color: #f59e0b;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn-primary {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .modal-btn-secondary {
+            background: white;
+            color: #6b7280;
+            border: 2px solid #e5e7eb;
+        }
+
+        .modal-btn-secondary:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .product-count {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
         }
 
         .loading-overlay {
@@ -350,8 +598,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .footer {
@@ -435,13 +688,25 @@
                 font-size: 14px;
             }
 
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
             .products-table th:first-child,
             .products-table td:first-child {
                 display: none;
             }
+
+            .modal-content {
+                width: 95%;
+                padding: 24px;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header class="header">
@@ -449,20 +714,26 @@
                 <div class="brand-dot"></div>
                 <span>Reconocimiento 2025</span>
             </div>
-            
+
             <div class="user-info">
                 <div class="user-avatar">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z" fill="#a363f1"/>
-                        <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="#a363f1"/>
+                        <path
+                            d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z"
+                            fill="#a363f1" />
+                        <path d="M12 14C7.58172 14 4 17.5817 4 22H20C20 17.5817 16.4183 14 12 14Z" fill="#a363f1" />
                     </svg>
                 </div>
                 <span class="user-name">Usuario</span>
                 <button class="logout-btn" onclick="logout()">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path
+                            d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
                     </svg>
                 </button>
             </div>
@@ -470,7 +741,8 @@
 
         <button class="back-btn" onclick="goBack()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
             </svg>
             Volver
         </button>
@@ -479,11 +751,12 @@
             <div class="page-header">
                 <h1 class="page-title">Transferencia de Stock</h1>
                 <p class="page-subtitle">
-                    Depósito 1
+                    {{ deposito_origen.nombre }}
                     <svg class="arrow-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
-                    Depósito 2
+                    {{ deposito_destino.nombre }}
                 </p>
             </div>
 
@@ -498,9 +771,11 @@
                         {% else %}
                         <div class="photo-placeholder">
                             <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
-                                <rect x="3" y="3" width="18" height="18" rx="2" stroke="#cbd5e1" stroke-width="2"/>
-                                <circle cx="8.5" cy="8.5" r="1.5" fill="#cbd5e1"/>
-                                <path d="M3 16L7 12L11 16L15 12L21 18V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V16Z" fill="#cbd5e1"/>
+                                <rect x="3" y="3" width="18" height="18" rx="2" stroke="#cbd5e1" stroke-width="2" />
+                                <circle cx="8.5" cy="8.5" r="1.5" fill="#cbd5e1" />
+                                <path
+                                    d="M3 16L7 12L11 16L15 12L21 18V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V16Z"
+                                    fill="#cbd5e1" />
                             </svg>
                             <p>No hay imagen</p>
                         </div>
@@ -508,7 +783,7 @@
                     </div>
                     <button class="secondary-btn" onclick="addNewPhoto()">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                         </svg>
                         Agregar
                     </button>
@@ -517,7 +792,26 @@
                 <div class="table-card">
                     <div class="card-header">
                         <h2>Productos Detectados</h2>
+                        <span class="product-count" id="productCount">0 productos</span>
                     </div>
+
+                    <button class="add-manual-btn" onclick="openProductCatalog()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 5V19M5 12H19" stroke="white" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        Agregar producto manualmente
+                    </button>
+
+                    <button class="secondary-btn" style="margin-bottom: 16px;" onclick="limpiarTodo()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                            <path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path
+                                d="M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        Limpiar Todo
+                    </button>
 
                     <div class="stats-summary">
                         <div class="stat-item">
@@ -529,7 +823,7 @@
                             <span class="stat-value" id="totalCantidad">0</span>
                         </div>
                     </div>
-                    
+
                     <div class="table-container">
                         <table class="products-table">
                             <thead>
@@ -537,6 +831,7 @@
                                     <th>#</th>
                                     <th>Cant.</th>
                                     <th>Producto</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="productsBody">
@@ -544,18 +839,27 @@
                                 <tr data-id="{{ producto.id }}">
                                     <td>{{ forloop.counter }}</td>
                                     <td>
-                                        <input type="number" 
-                                               value="{{ producto.cantidad }}" 
-                                               class="qty-input" 
-                                               min="0"
-                                               data-nombre="{{ producto.nombre }}"
-                                               onchange="actualizarTotales()">
+                                        <input type="number" value="{{ producto.cantidad }}" class="qty-input" min="0"
+                                            data-producto-id="{{ producto.id }}" data-nombre="{{ producto.nombre }}"
+                                            onchange="actualizarTotales()">
                                     </td>
                                     <td>{{ producto.nombre }}</td>
+                                    <td>
+                                        <button class="delete-btn" onclick="deleteRow(this)" title="Eliminar producto">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                                                <path d="M3 6H5H21" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" />
+                                                <path
+                                                    d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z"
+                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round" />
+                                            </svg>
+                                        </button>
+                                    </td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="3" style="text-align: center; color: #9ca3af; padding: 32px;">
+                                    <td colspan="4" style="text-align: center; color: #9ca3af; padding: 32px;">
                                         No se detectaron productos
                                     </td>
                                 </tr>
@@ -566,7 +870,8 @@
 
                     <button class="primary-btn" onclick="confirmTransfer()" id="btnConfirm">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <path d="M20 6L9 17L4 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M20 6L9 17L4 12" stroke="white" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
                         </svg>
                         Confirmar transferencia
                     </button>
@@ -579,6 +884,34 @@
         </footer>
     </div>
 
+    <!-- MODAL PARA AGREGAR PRODUCTO MANUAL -->
+    <div class="modal-overlay" id="catalogModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Agregar Producto</h3>
+                <button class="close-modal" onclick="closeCatalog()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="product-catalog" id="productCatalog">
+                <!-- Se llenará dinámicamente con JavaScript -->
+            </div>
+
+            <div class="quantity-input-group">
+                <label for="manualQuantity">Cantidad</label>
+                <input type="number" id="manualQuantity" min="1" value="1" placeholder="Ingresa la cantidad">
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-secondary" onclick="closeCatalog()">Cancelar</button>
+                <button class="modal-btn modal-btn-primary" onclick="addManualProduct()">Agregar</button>
+            </div>
+        </div>
+    </div>
+
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-content">
             <div class="spinner"></div>
@@ -588,12 +921,38 @@
     </div>
 
     <script>
-        window.addEventListener('DOMContentLoaded', function() {
+        // ✅ CATÁLOGO DE PRODUCTOS (mismo que caja)
+
+        const PRODUCTOS_CATALOGO = [{
+                id: 4,
+                nombre: "Pure de Tomate",
+                precio_unitario: "150.00"
+            },
+            {
+                id: 5,
+                nombre: "Lata choclo cremoso",
+                precio_unitario: "180.00"
+            },
+            {
+                id: 6,
+                nombre: "Arroz Gallo Oro",
+                precio_unitario: "250.00"
+            },
+            {
+                id: 7,
+                nombre: "Galletitas Toddy",
+                precio_unitario: "120.00"
+            }
+        ];
+
+        let selectedProduct = null;
+
+        window.addEventListener('DOMContentLoaded', function () {
             const cards = document.querySelectorAll('.photo-card, .table-card');
             cards.forEach((card, index) => {
                 card.style.opacity = '0';
                 card.style.transform = 'translateY(20px)';
-                
+
                 setTimeout(() => {
                     card.style.transition = 'all 0.6s ease';
                     card.style.opacity = '1';
@@ -601,89 +960,379 @@
                 }, index * 150);
             });
 
+            updateProductCount();
             actualizarTotales();
+
+            // Cerrar modal al hacer clic fuera
+            document.getElementById('catalogModal').addEventListener('click', function (e) {
+                if (e.target === this) {
+                    closeCatalog();
+                }
+            });
         });
 
         function actualizarTotales() {
             const inputs = document.querySelectorAll('.qty-input');
-            let total = 0;
-            
-            inputs.forEach(input => {
-                const cantidad = parseInt(input.value) || 0;
-                total += cantidad;
-            });
+            let totalCantidad = 0;
+            let totalProductos = 0;
 
-            document.getElementById('totalCantidad').textContent = total;
-        }
-
-        function addNewPhoto() {
-            if (confirm('¿Deseas capturar una nueva imagen? Los productos actuales se perderán.')) {
-                window.location.href = '/api/deposito/foto/';
-            }
-        }
-
-        async function confirmTransfer() {
-            const inputs = document.querySelectorAll('.qty-input');
-            const productos = [];
-            
             inputs.forEach(input => {
                 const cantidad = parseInt(input.value) || 0;
                 if (cantidad > 0) {
-                    productos.push({
-                        nombre: input.dataset.nombre,
+                    totalCantidad += cantidad;
+                    totalProductos++;
+                }
+            });
+
+            document.getElementById('totalCantidad').textContent = totalCantidad;
+            document.getElementById('totalProductos').textContent = totalProductos;
+        }
+
+        function updateProductCount() {
+            const rows = document.querySelectorAll('#productsBody tr');
+            let count = 0;
+
+            rows.forEach(row => {
+                const input = row.querySelector('.qty-input');
+                if (input) {
+                    count++;
+                }
+            });
+
+            const plural = count !== 1 ? 's' : '';
+            document.getElementById('productCount').textContent = count + ' producto' + plural;
+        }
+
+        function updateRowNumbers() {
+            const rows = document.querySelectorAll('#productsBody tr');
+            rows.forEach((row, index) => {
+                const firstCell = row.cells[0];
+                if (firstCell) {
+                    firstCell.textContent = index + 1;
+                }
+            });
+        }
+
+        // ✅ ABRIR CATÁLOGO
+        function openProductCatalog() {
+            const modal = document.getElementById('catalogModal');
+            const catalog = document.getElementById('productCatalog');
+
+            catalog.innerHTML = '';
+            selectedProduct = null;
+
+            PRODUCTOS_CATALOGO.forEach((producto, index) => {
+                const item = document.createElement('div');
+                item.className = 'catalog-item';
+                item.onclick = () => selectProduct(index);
+                item.innerHTML = `
+                    <div class="catalog-item-info">
+                        <div class="catalog-item-name">${producto.nombre}</div>
+                    </div>
+                    <input type="radio" name="product" class="catalog-item-radio" ${index === 0 ? 'checked' : ''}>
+                `;
+                catalog.appendChild(item);
+            });
+
+            selectProduct(0);
+            modal.classList.add('active');
+            document.getElementById('manualQuantity').value = 1;
+        }
+
+        // ✅ SELECCIONAR PRODUCTO
+        function selectProduct(index) {
+            selectedProduct = PRODUCTOS_CATALOGO[index];
+
+            const items = document.querySelectorAll('.catalog-item');
+            items.forEach((item, i) => {
+                if (i === index) {
+                    item.classList.add('selected');
+                    item.querySelector('input[type="radio"]').checked = true;
+                } else {
+                    item.classList.remove('selected');
+                    item.querySelector('input[type="radio"]').checked = false;
+                }
+            });
+        }
+
+        // ✅ CERRAR CATÁLOGO
+        function closeCatalog() {
+            document.getElementById('catalogModal').classList.remove('active');
+        }
+
+        // ✅ AGREGAR PRODUCTO MANUAL
+        function addManualProduct() {
+            if (!selectedProduct) {
+                alert('Por favor selecciona un producto');
+                return;
+            }
+
+            const quantity = parseInt(document.getElementById('manualQuantity').value);
+            if (!quantity || quantity < 1) {
+                alert('Por favor ingresa una cantidad válida');
+                return;
+            }
+
+            const tbody = document.getElementById('productsBody');
+
+            // Si la tabla está vacía, limpiarla
+            if (tbody.querySelector('td[colspan="4"]')) {
+                tbody.innerHTML = '';
+            }
+
+            const newRow = document.createElement('tr');
+            const rowCount = tbody.querySelectorAll('tr').length + 1;
+
+            newRow.setAttribute('data-id', selectedProduct.id || '');
+            newRow.innerHTML = `
+                <td>${rowCount}</td>
+                <td>
+                    <input type="number" 
+                           value="${quantity}" 
+                           class="qty-input" 
+                           min="0"
+                           data-producto-id="${selectedProduct.id}"
+                           data-nombre="${selectedProduct.nombre}"
+                           onchange="actualizarTotales()">
+                </td>
+                <td>${selectedProduct.nombre}</td>
+                <td>
+                    <button class="delete-btn" onclick="deleteRow(this)" title="Eliminar producto">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                            <path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </td>
+            `;
+
+            tbody.appendChild(newRow);
+
+            updateProductCount();
+            actualizarTotales();
+            closeCatalog();
+
+            console.log('✅ Producto manual agregado:', selectedProduct.nombre, 'x', quantity);
+        }
+
+        // ✅ ELIMINAR PRODUCTO
+        function deleteRow(button) {
+            if (confirm('¿Eliminar este producto?')) {
+                const row = button.closest('tr');
+                const nombreProducto = row.cells[2].textContent.trim();
+
+                row.remove();
+
+                const tbody = document.getElementById('productsBody');
+                if (tbody.querySelectorAll('tr').length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: #9ca3af; padding: 32px;">
+                                No se detectaron productos
+                            </td>
+                        </tr>
+                    `;
+                }
+
+                updateRowNumbers();
+                updateProductCount();
+                actualizarTotales();
+
+                console.log('🗑️ Producto eliminado:', nombreProducto);
+            }
+        }
+
+        async function addNewPhoto() {
+            // Guardar productos actuales antes de ir a tomar foto (ACUMULAR)
+            const inputs = document.querySelectorAll('.qty-input');
+            const productosActuales = [];
+
+            inputs.forEach(input => {
+                const cantidad = parseInt(input.value) || 0;
+                const nombre = input.dataset.nombre;
+                const productoId = input.dataset.productoId;
+
+                if (cantidad > 0 && productoId) {
+                    productosActuales.push({
+                        id: parseInt(productoId),
+                        nombre: nombre,
                         cantidad: cantidad
                     });
                 }
             });
+
+            console.log('📦 Guardando productos actuales antes de agregar más:', productosActuales);
+
+            try {
+                // Guardar en sesión del servidor
+                const response = await fetch('/api/deposito/guardar-temporales/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        productos: productosActuales
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    console.log('✅ Productos guardados en sesión');
+                    // Redirigir a capturar nueva foto (se acumularán los productos)
+                    window.location.href = '/api/deposito/foto/';
+                } else {
+                    console.error('❌ Error al guardar productos');
+                    alert('Error al guardar los productos actuales');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error de conexión al guardar productos');
+            }
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        async function confirmTransfer() {
+            debugger;
+            const inputs = document.querySelectorAll('.qty-input');
+            const productos = [];
+
+            inputs.forEach(input => {
+                const cantidad = parseInt(input.value) || 0;
+                const productoId = input.dataset.productoId;
+
+                console.log(`📝 Procesando input:`, {
+                    productoId,
+                    cantidad,
+                    nombre: input.dataset.nombre
+                });
+
+                if (cantidad > 0 && productoId) {
+                    productos.push({
+                        producto_id: parseInt(productoId),
+                        cantidad: cantidad
+                    });
+                }
+            });
+
+            console.log('📦 Array productos final:', productos);
 
             if (productos.length === 0) {
                 alert('Debes tener al menos un producto con cantidad mayor a 0');
                 return;
             }
 
-            if (!confirm('¿Confirmar la transferencia de estos productos?')) {
+            // Obtener IDs de depósitos desde el template (Django)
+            const depositoOrigenId = parseInt("{{ deposito_origen.id }}");
+            const depositoDestinoId = parseInt("{{ deposito_destino.id }}");
+
+            const depositoOrigenNombre = "{{ deposito_origen.nombre }}";
+            const depositoDestinoNombre = "{{ deposito_destino.nombre }}";
+
+            if (!confirm(
+                    `¿Confirmar la transferencia de ${productos.length} producto(s) desde ${depositoOrigenNombre} hacia ${depositoDestinoNombre}?`
+                )) {
                 return;
             }
 
             const loadingOverlay = document.getElementById('loadingOverlay');
             const btnConfirm = document.getElementById('btnConfirm');
-            
+
             loadingOverlay.classList.add('active');
             btnConfirm.disabled = true;
 
             try {
-                const response = await fetch('/api/deposito/confirmar/', {
+                // ✅ Preparar datos en el formato correcto que espera el backend
+                const transferData = {
+                    depositoOrigen: depositoOrigenId,
+                    depositoDestino: depositoDestinoId,
+                    productos: productos
+                };
+
+                console.log('🚀 === DATOS ENVIADOS AL BACKEND ===');
+                console.log(JSON.stringify(transferData, null, 2));
+                console.log('====================================');
+
+                // Enviar al backend FastAPI
+                const response = await fetch('http://localhost:8000/api/deposito/crearTransferencia/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        productos: productos,
-                        almacen_origen: 'Depósito 1',
-                        almacen_destino: 'Depósito 2'
-                    })
+                    body: JSON.stringify(transferData)
                 });
 
                 const data = await response.json();
 
+                console.log('📥 Respuesta del backend:', data);
+
                 loadingOverlay.classList.remove('active');
 
                 if (data.success) {
+                    console.log('✅ Transferencia creada exitosamente:');
+                    console.log('  - ID Transferencia:', data.transferencia_id);
+                    console.log('  - Detalles:', data.detalles);
+
+                    // Limpiar sesión después de confirmar
+                    await fetch('/api/deposito/limpiar-sesion/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    });
+
                     window.location.href = '/api/deposito/confirmada/';
                 } else {
-                    alert('Error al confirmar la transferencia: ' + (data.error || 'Error desconocido'));
+                    alert('Error al confirmar la transferencia: ' + (data.message || data.error ||
+                        'Error desconocido'));
                     btnConfirm.disabled = false;
                 }
             } catch (error) {
                 loadingOverlay.classList.remove('active');
                 btnConfirm.disabled = false;
-                console.error('Error:', error);
-                alert('Error al confirmar la transferencia. Por favor intenta de nuevo.');
+                console.error('❌ Error:', error);
+                alert('Error al conectar con el servidor. Por favor intenta de nuevo.');
             }
         }
 
-        function goBack() {
-            if (confirm('¿Deseas volver? Los cambios no guardados se perderán.')) {
+        async function goBack() {
+            if (confirm('¿Deseas volver? Los productos actuales se perderán.')) {
+                try {
+                    // Limpiar la sesión antes de volver
+                    const response = await fetch('/api/deposito/limpiar-sesion/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        console.log('✅ Sesión limpiada al volver');
+                    }
+                } catch (error) {
+                    console.error('Error al limpiar sesión:', error);
+                }
+
+                // Redirigir de todas formas
                 window.location.href = '/api/deposito/foto/';
             }
         }
@@ -693,6 +1342,33 @@
                 window.location.href = '/api/login/';
             }
         }
+        async function limpiarTodo() {
+            if (confirm('¿Estás seguro de que quieres eliminar todos los productos?')) {
+                try {
+                    const response = await fetch('/api/deposito/limpiar-sesion/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        console.log('✅ Sesión limpiada completamente');
+                        // Recargar la página para ver los cambios
+                        window.location.reload();
+                    } else {
+                        alert('Error al limpiar la sesión');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error de conexión al limpiar');
+                }
+            }
+        }
     </script>
 </body>
+
 </html>
